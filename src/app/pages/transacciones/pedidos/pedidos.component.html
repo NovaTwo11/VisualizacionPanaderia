@@ -2,7 +2,7 @@
   <div class="page-header">
     <div class="page-title">
       <h2>Gestión de Pedidos</h2>
-      <p>Administre los pedidos de la panadería</p>
+      <p>Administre los pedidos de la panadería de manera eficiente</p>
     </div>
 
     <div class="page-actions">
@@ -17,7 +17,7 @@
     <div class="card">
       <div class="card-header">
         <h3>{{ formMode === 'crear' ? 'Crear Nuevo Pedido' : 'Editar Pedido' }}</h3>
-        <button class="btn-close" (click)="toggleFormMode('oculto')">✕</button>
+        <button class="btn-close" (click)="toggleFormMode('oculto')" aria-label="Cerrar formulario">✕</button>
       </div>
 
       <div class="card-body">
@@ -146,7 +146,7 @@
                     </div>
 
                     <div class="col-1">
-                      <button type="button" class="btn-icon remove-producto" title="Eliminar producto" (click)="eliminarProducto(i)">
+                      <button type="button" class="remove-producto" title="Eliminar producto" (click)="eliminarProducto(i)" aria-label="Eliminar producto">
                         🗑️
                       </button>
                     </div>
@@ -184,10 +184,10 @@
         <div class="card-filters">
           <div class="search-box">
             <input type="text" placeholder="Buscar pedido..." class="search-input" [(ngModel)]="searchTerm" (input)="onSearchChange()">
-            <button class="search-button">🔍</button>
+            <button class="search-button" aria-label="Buscar">🔍</button>
           </div>
 
-          <select class="form-control filter-select" [(ngModel)]="filtroEstado" (change)="filtrarPedidos()">
+          <select class="filter-select" [(ngModel)]="filtroEstado" (change)="filtrarPedidos()">
             <option value="todos">Todos los estados</option>
             <option value="pendiente">Pendiente</option>
             <option value="en preparación">En preparación</option>
@@ -210,10 +210,13 @@
         </div>
 
         <div *ngIf="!loading && !error" class="pedidos-grid">
-          <div class="pedido-card" *ngFor="let pedido of filteredPedidos">
+          <div class="pedido-card" *ngFor="let pedido of filteredPedidos; let i = index" [style.animation-delay]="i * 0.05 + 's'" class="animate-fade-in">
             <div class="pedido-header">
               <div class="pedido-id">Pedido #{{ pedido.id }}</div>
-              <div class="pedido-fecha"> {{ pedido.fecha | date:'dd/MM/yyyy HH:mm':'-10:00' }}</div>
+              <div class="pedido-fecha">
+                {{ pedido.fecha
+                | date:'dd/MM/yyyy HH:mm':'-1000' }}
+              </div>
               <div class="pedido-badge" [ngClass]="'estado-' + pedido.estado.replace(' ', '-')">
                 {{ pedido.estado }}
               </div>
@@ -276,7 +279,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h3>Confirmar Eliminación</h3>
-        <button class="btn-close" (click)="showDeleteModal = false">✕</button>
+        <button class="btn-close" (click)="showDeleteModal = false" aria-label="Cerrar modal">✕</button>
       </div>
       <div class="modal-body">
         <p>¿Está seguro que desea eliminar el pedido <strong>#{{ pedidoSeleccionado?.id }}</strong>?</p>

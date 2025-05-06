@@ -5,13 +5,14 @@ import { Administrador } from '../../../models/models';
 import { AdministradorService } from '../../../services/administrador.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import {SearchBarComponent} from '../../../shared/search-bar/search-bar.component';
 
 @Component({
   selector: 'app-administradores',
   templateUrl: './administradores.component.html',
   styleUrls: ['./administradores.component.css'],
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, FormsModule, SearchBarComponent],
   animations: [
     trigger('formAnimation', [
       transition(':enter', [
@@ -29,6 +30,25 @@ export class AdministradoresComponent implements OnInit {
   filteredAdministradores: Administrador[] = [];
   loading: boolean = true;
   error: string | null = null;
+
+  permisosDisponibles: string[] = [
+    'Administradores',
+    'Clientes',
+    'Productos',
+    'Repartidores',
+    'Pedidos',
+    'Reportes',
+    'Configuración',
+    'Exportar Datos',
+    'Importar Datos',
+    'Crear Backups',
+    'Restaurar Backups',
+    'Gestionar Usuarios',
+    'Ver Estadísticas',
+    'Modificar Precios',
+    'Gestionar Stock',
+    'Cancelar Pedidos'
+  ];
 
   // Formulario
   adminForm: FormGroup;

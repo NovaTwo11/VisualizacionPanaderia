@@ -1,20 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap');
-
-/* Variables de colores */
-:root {
-  --color-cream: #f8f3e6;
-  --color-toast: #e6c9a8;
-  --color-toast-dark: #d4a76a;
-  --color-cinnamon: #a67c52;
-  --color-chocolate: #6b4226;
-  --color-error: #e74c3c;
-  --shadow-soft: 0 10px 30px rgba(107, 66, 38, 0.15);
-  --border-radius: 30px; /* Esquinas MUCHO más redondeadas */
-  --transition-speed: 0.3s;
-  --font-primary: 'Quicksand', sans-serif;
-  --font-display: 'Playfair Display', serif;
-}
-
 /* Estilos generales */
 .login-container {
   display: flex;

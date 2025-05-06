@@ -1,9 +1,8 @@
-<!-- clientes.component.html -->
 <div class="clientes-container">
   <div class="page-header">
     <div class="page-title">
       <h2>Gestión de Clientes</h2>
-      <p>Administre la información de sus clientes</p>
+      <p>Administre la información de sus clientes de manera eficiente</p>
     </div>
     <div class="page-actions">
       <button class="btn btn-primary" (click)="toggleFormMode('crear')">
@@ -17,60 +16,75 @@
     <div class="card">
       <div class="card-header">
         <h3>{{ formMode === 'crear' ? 'Crear Nuevo Cliente' : 'Editar Cliente' }}</h3>
-        <button class="btn-close" (click)="toggleFormMode('oculto')">✕</button>
+        <button class="btn-close" (click)="toggleFormMode('oculto')" aria-label="Cerrar formulario">✕</button>
       </div>
       <div class="card-body">
         <form [formGroup]="clienteForm" (ngSubmit)="guardarCliente()">
           <div class="row">
             <div class="col">
-              <label for="nombre">Nombre</label>
-              <input type="text" id="nombre" formControlName="nombre"
-                     class="form-control"
-                     [class.is-invalid]="submitted && f['nombre'].errors">
-              <div class="invalid-feedback" *ngIf="submitted && f['nombre'].errors">
-                El nombre es requerido
+              <div class="form-group">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" id="nombre" formControlName="nombre"
+                       class="form-control"
+                       [class.is-invalid]="submitted && f['nombre'].errors">
+                <div class="invalid-feedback" *ngIf="submitted && f['nombre'].errors">
+                  El nombre es requerido
+                </div>
               </div>
             </div>
             <div class="col">
-              <label for="apellido">Apellido</label>
-              <input type="text" id="apellido" formControlName="apellido"
-                     class="form-control"
-                     [class.is-invalid]="submitted && f['apellido'].errors">
-              <div class="invalid-feedback" *ngIf="submitted && f['apellido'].errors">
-                El apellido es requerido
+              <div class="form-group">
+                <label for="apellido" class="form-label">Apellido</label>
+                <input type="text" id="apellido" formControlName="apellido"
+                       class="form-control"
+                       [class.is-invalid]="submitted && f['apellido'].errors">
+                <div class="invalid-feedback" *ngIf="submitted && f['apellido'].errors">
+                  El apellido es requerido
+                </div>
               </div>
             </div>
           </div>
 
           <div class="row">
             <div class="col">
-              <label for="email">Email</label>
-              <input type="email" id="email" formControlName="email"
-                     class="form-control"
-                     [class.is-invalid]="submitted && f['email'].errors">
-              <div class="invalid-feedback" *ngIf="submitted && f['email'].errors">
-                <span *ngIf="f['email'].errors?.['required']">El email es requerido</span>
-                <span *ngIf="f['email'].errors?.['email']">Ingrese un email válido</span>
+              <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" formControlName="email"
+                       class="form-control"
+                       [class.is-invalid]="submitted && f['email'].errors">
+                <div class="invalid-feedback" *ngIf="submitted && f['email'].errors">
+                  <span *ngIf="f['email'].errors?.['required']">El email es requerido</span>
+                  <span *ngIf="f['email'].errors?.['email']">Ingrese un email válido</span>
+                </div>
               </div>
             </div>
             <div class="col">
-              <label for="telefono">Teléfono</label>
-              <input type="text" id="telefono" formControlName="telefono"
-                     class="form-control"
-                     [class.is-invalid]="submitted && f['telefono'].errors">
-              <div class="invalid-feedback" *ngIf="submitted && f['telefono'].errors">
-                El teléfono es requerido
+              <div class="form-group">
+                <label for="telefono" class="form-label">Teléfono</label>
+                <input type="text" id="telefono" formControlName="telefono"
+                       class="form-control"
+                       [class.is-invalid]="submitted && f['telefono'].errors">
+                <div class="invalid-feedback" *ngIf="submitted && f['telefono'].errors">
+                  El teléfono es requerido
+                </div>
               </div>
             </div>
           </div>
 
           <div class="form-group">
-            <label for="direccion">Dirección</label>
+            <label for="direccion" class="form-label">Dirección</label>
             <input type="text" id="direccion" formControlName="direccion"
                    class="form-control"
                    [class.is-invalid]="submitted && f['direccion'].errors">
             <div class="invalid-feedback" *ngIf="submitted && f['direccion'].errors">
               La dirección es requerida
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-check">
+              <input type="checkbox" id="activo" formControlName="activo" class="form-check-input">
+              <label for="activo" class="form-check-label">Cliente activo</label>
             </div>
           </div>
 
@@ -100,7 +114,8 @@
       </div>
       <div class="card-body">
         <div *ngIf="loading" class="loading-container">
-          <div class="loader"></div><p>Cargando clientes...</p>
+          <div class="loader"></div>
+          <p>Cargando clientes...</p>
         </div>
         <div *ngIf="error" class="error-container">
           <p>{{ error }}</p>
@@ -110,12 +125,18 @@
           <table class="table">
             <thead>
             <tr>
-              <th>ID</th><th>Nombre</th><th>Email</th><th>Teléfono</th>
-              <th>Dirección</th><th>Total Compras</th><th>Estado</th><th>Acciones</th>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Teléfono</th>
+              <th>Dirección</th>
+              <th>Total Compras</th>
+              <th>Estado</th>
+              <th>Acciones</th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let cliente of filteredClientes">
+            <tr *ngFor="let cliente of filteredClientes; let i = index" [style.animation-delay]="i * 0.05 + 's'" class="animate-fade-in">
               <td>{{ cliente.id }}</td>
               <td>{{ cliente.nombre }} {{ cliente.apellido }}</td>
               <td>{{ cliente.email }}</td>
@@ -128,11 +149,13 @@
                     {{ cliente.activo ? 'Activo' : 'Inactivo' }}
                   </span>
               </td>
-              <td class="table-actions">
-                <button class="btn-icon" title="Editar"
-                        (click)="editarCliente(cliente)">✏️</button>
-                <button class="btn-icon" title="Eliminar"
-                        (click)="confirmarEliminar(cliente)">🗑️</button>
+              <td>
+                <div class="table-actions">
+                  <button class="btn-icon" title="Editar"
+                          (click)="editarCliente(cliente)" aria-label="Editar cliente">✏️</button>
+                  <button class="btn-icon" title="Eliminar"
+                          (click)="confirmarEliminar(cliente)" aria-label="Eliminar cliente">🗑️</button>
+                </div>
               </td>
             </tr>
             <tr *ngIf="filteredClientes.length === 0">
@@ -151,7 +174,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h3>Confirmar Eliminación</h3>
-        <button class="btn-close" (click)="showDeleteModal = false">✕</button>
+        <button class="btn-close" (click)="showDeleteModal = false" aria-label="Cerrar modal">✕</button>
       </div>
       <div class="modal-body">
         <p>

@@ -1,6 +1,6 @@
 <header class="header">
   <div class="header-left">
-    <button class="menu-toggle" (click)="toggleSidebar()">
+    <button class="menu-toggle" (click)="toggleSidebar()" aria-label="Toggle sidebar">
       <i class="fas fa-bars"></i>
     </button>
     <div class="logo">
@@ -16,9 +16,13 @@
     </app-search-bar>
   </div>
 
+  <div class="header-right">
+    <!-- Theme Toggle -->
+    <app-theme-toggle></app-theme-toggle>
+
     <!-- Perfil y Configuración -->
     <div class="header-item user-dropdown">
-      <button class="user-btn" (click)="toggleUserMenu($event)">
+      <button class="user-btn" (click)="toggleUserMenu($event)" aria-label="User menu">
         <div class="user-avatar">
           <img [src]="getUserAvatar()" [alt]="usuario?.nombre">
         </div>
@@ -51,4 +55,5 @@
         </div>
       </div>
     </div>
+  </div>
 </header>

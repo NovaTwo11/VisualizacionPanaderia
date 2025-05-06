@@ -1,96 +1,135 @@
 <div class="reporte-productos-container">
   <div class="section-header">
     <h2>Reporte de Productos</h2>
+    <p class="section-description">
+      Visualice el rendimiento y estado de los productos en el inventario.
+    </p>
   </div>
-  <div class="actions-container">
+
+  <div class="actions-container animate-fade-in">
+    <!-- Período -->
     <div class="filter-container">
       <label for="filtroTiempo">Período:</label>
       <select id="filtroTiempo" class="form-control" (change)="cambiarFiltroTiempo($event)">
-        <option value="siempre" [selected]="filtroTiempo==='siempre'">Siempre</option>
+        <option value="siempre" [selected]="filtroTiempo==='siempre'">Todos los períodos</option>
         <option value="mensual" [selected]="filtroTiempo==='mensual'">Mensual</option>
         <option value="semanal" [selected]="filtroTiempo==='semanal'">Semanal</option>
-        <option value="diario" [selected]="filtroTiempo==='diario'">Diario</option>
+        <option value="diario"  [selected]="filtroTiempo==='diario'">Diario</option>
       </select>
     </div>
+
+    <!-- Tipo de Reporte -->
     <div class="filter-container">
-      <label for="filtroTipo">Tipo de Reporte:</label>
-      <select id="filtroTipo" class="form-control" (change)="cambiarTipoReporte($event)">
-        <option value="GENERAL" [selected]="filtroTipoReporte==='GENERAL'">General</option>
+      <label for="filtroTipoReporte">Tipo de Reporte:</label>
+      <select id="filtroTipoReporte" class="form-control" (change)="cambiarTipoReporte($event)">
+        <option value="GENERAL" [selected]="filtroTipoReporte==='GENERAL'">General por Categoría</option>
         <option value="POR_PRODUCTO" [selected]="filtroTipoReporte==='POR_PRODUCTO'">Por Producto</option>
         <option value="POR_CLIENTE" [selected]="filtroTipoReporte==='POR_CLIENTE'">Por Cliente</option>
       </select>
     </div>
-    <button class="btn btn-primary" (click)="exportarReporte()">Exportar</button>
+
+    <button class="btn btn-primary" (click)="exportarReporte()">
+      <span>📊</span> Exportar Reporte
+    </button>
   </div>
-  <div class="card" *ngIf="!loading">
-    <div class="table-responsive">
-      <table id="tablaProductos" class="table">
-        <thead>
-        <tr>
-          <!-- Columnas para Tipo = General -->
+
+  <div class="card animate-slide-up" *ngIf="!loading">
+    <div class="card-header">
+      <h3>Resultados del Reporte</h3>
+      <div *ngIf="periodoInicio && periodoFin" class="report-period">
+        Período: {{ periodoInicio | date:'dd/MM/yyyy HH:mm' }} - {{ periodoFin | date:'dd/MM/yyyy HH:mm' }}
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table id="tablaProductos" class="table">
+          <thead>
+          <tr>
+            <!-- Columnas para Tipo = General -->
+            <ng-container *ngIf="filtroTipoReporte==='GENERAL'">
+              <th>Categoría</th>
+              <th>Unidades Vendidas</th>
+              <th>Método de Pago</th>
+              <th>Total Generado</th>
+              <th>Número de Pedidos</th>
+              <th>Ticket Promedio</th>
+            </ng-container>
+
+            <!-- Columnas para Tipo = Por Producto -->
+            <ng-container *ngIf="filtroTipoReporte==='POR_PRODUCTO'">
+              <th>Producto</th>
+              <th>Stock</th>
+              <th>Precio Unitario</th>
+              <th>Cantidad Vendida</th>
+            </ng-container>
+
+            <!-- Columnas para Tipo = Por Cliente -->
+            <ng-container *ngIf="filtroTipoReporte==='POR_CLIENTE'">
+              <th>Cliente</th>
+              <th>Total Unidades</th>
+              <th>Productos Comprados</th>
+            </ng-container>
+          </tr>
+          </thead>
+          <tbody>
+          <!-- Filas para Tipo = General -->
           <ng-container *ngIf="filtroTipoReporte==='GENERAL'">
-            <th>Categoría</th>
-            <th>Unidades Vendidas Totales</th>
+            <tr *ngFor="let d of detalles; let i = index" [style.animation-delay]="i * 0.05 + 's'" class="animate-fade-in">
+              <td>{{ d.categoria || 'Sin categoría' }}</td>
+              <td>{{ d.unidadesVendidasTotales }}</td>
+              <td>{{ d.metodoPago }}</td>
+              <td>{{ d.totalGenerado | currency }}</td>
+              <td>{{ d.numeroPedidos }}</td>
+              <td>{{ d.ticketPromedio | currency }}</td>
+            </tr>
           </ng-container>
 
-          <!-- Columnas para Tipo = Por Producto -->
+          <!-- Filas para Tipo = Por Producto -->
           <ng-container *ngIf="filtroTipoReporte==='POR_PRODUCTO'">
-            <th>Producto</th>
-            <th>Categoría</th>
-            <th>Stock</th>
-            <th>Precio</th>
-            <th>Cantidad Vendida</th>
+            <tr *ngFor="let d of detalles; let i = index" [style.animation-delay]="i * 0.05 + 's'" class="animate-fade-in">
+              <td>{{ d.nombreProducto }}</td>
+              <td>{{ d.stock }}</td>
+              <td>{{ d.precioUnitario | currency }}</td>
+              <td>{{ d.cantidadVendida }}</td>
+            </tr>
           </ng-container>
 
-          <!-- Columnas para Tipo = Por Cliente -->
+          <!-- Filas para Tipo = Por Cliente -->
           <ng-container *ngIf="filtroTipoReporte==='POR_CLIENTE'">
-            <th>Cliente</th>
-            <th>Total Unidades</th>
-            <th>Productos Comprados</th>
+            <tr *ngFor="let d of detalles; let i = index" [style.animation-delay]="i * 0.05 + 's'" class="animate-fade-in">
+              <td>{{ d.nombreCliente }}</td>
+              <td>{{ d.totalUnidades }}</td>
+              <td>
+                <ul class="product-detail-list" *ngIf="d.productosComprados?.length">
+                  <li *ngFor="let p of d.productosComprados">
+                    {{ p.nombre }} ({{ p.cantidad }})
+                  </li>
+                </ul>
+                <span *ngIf="!d.productosComprados?.length">Sin detalles</span>
+              </td>
+            </tr>
           </ng-container>
-        </tr>
-        </thead>
-        <tbody>
-        <!-- Filas para Tipo = General -->
-        <ng-container *ngIf="filtroTipoReporte==='GENERAL'">
-          <tr *ngFor="let d of detalles">
-            <td>{{ d.categoria }}</td>
-            <td>{{ d.unidadesVendidasTotales }}</td>
-          </tr>
-        </ng-container>
 
-        <!-- Filas para Tipo = Por Producto -->
-        <ng-container *ngIf="filtroTipoReporte==='POR_PRODUCTO'">
-          <tr *ngFor="let d of detalles">
-            <td>{{ d.nombreProducto }}</td>
-            <td>{{ d.categoria }}</td>
-            <td>{{ d.stock }}</td>
-            <td>{{ d.precioUnitario | currency }}</td>
-            <td>{{ d.cantidadVendida }}</td>
-          </tr>
-        </ng-container>
-
-        <!-- Filas para Tipo = Por Cliente -->
-        <ng-container *ngIf="filtroTipoReporte==='POR_CLIENTE'">
-          <tr *ngFor="let d of detalles">
-            <td>{{ d.nombreCliente }}</td>
-            <td>{{ d.totalUnidades }}</td>
-            <td>
-              <ul class="product-list">
-                <li *ngFor="let p of d.productosComprados">
-                  {{ p.nombre }} ({{ p.cantidad }})
-                </li>
-              </ul>
+          <!-- Mensaje cuando no hay datos -->
+          <tr *ngIf="detalles.length === 0">
+            <td [attr.colspan]="filtroTipoReporte === 'GENERAL' ? 6 : (filtroTipoReporte === 'POR_PRODUCTO' ? 4 : 3)" class="text-center">
+              No se encontraron datos para el período seleccionado
             </td>
           </tr>
-        </ng-container>
-        </tbody>
-      </table>
-    </div>
-    <div class="chart-container" style="height: 500px;">
-      <canvas #productosCanvas></canvas>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="chart-container">
+        <canvas #productosCanvas></canvas>
+      </div>
     </div>
   </div>
-  <div class="loading" *ngIf="loading">Cargando datos del reporte...</div>
+
+  <div class="loading" *ngIf="loading">
+    <div class="loader"></div>
+    <p>Cargando datos del reporte...</p>
+  </div>
+
   <div class="error" *ngIf="error">{{ error }}</div>
 </div>

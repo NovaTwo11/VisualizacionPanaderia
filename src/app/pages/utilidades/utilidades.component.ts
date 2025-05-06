@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { UtilidadesService } from '../../services/utilidades.service';
 import {BackupHistory, BackupRequest, ExportRequest, ImportRequest} from '../../models/models';
-import {DatePipe, NgForOf, NgIf} from '@angular/common';
+import {DatePipe, DecimalPipe, NgForOf, NgIf} from '@angular/common';
 
 interface Permiso {
   id: number;
@@ -31,7 +31,8 @@ type BackupBooleans = {
     DatePipe,
     ReactiveFormsModule,
     NgIf,
-    NgForOf
+    NgForOf,
+    DecimalPipe
   ],
   standalone: true
 })

@@ -1,29 +1,41 @@
 <div class="utilidades-container">
   <div class="page-header">
     <div class="page-title">
-      <h2>Utilidades del Sistema</h2>
-      <p>Herramientas para gestionar y configurar su aplicación</p>
+      <h2>Configuración del Sistema</h2>
+      <p>Personalice y configure las opciones del sistema</p>
     </div>
   </div>
 
   <div class="tabs-container">
     <div class="tabs-header">
-      <!-- Pestañas -->
       <div class="tab" [class.active]="activeTab === 'exportar'" (click)="setActiveTab('exportar')">
         <div class="tab-icon">📤</div>
         <div class="tab-text">Exportar Datos</div>
       </div>
+
       <div class="tab" [class.active]="activeTab === 'importar'" (click)="setActiveTab('importar')">
         <div class="tab-icon">📥</div>
         <div class="tab-text">Importar Datos</div>
       </div>
+
       <div class="tab" [class.active]="activeTab === 'respaldo'" (click)="setActiveTab('respaldo')">
         <div class="tab-icon">💾</div>
-        <div class="tab-text">Respaldo y Restauración</div>
+        <div class="tab-text">Respaldo</div>
       </div>
+
+      <div class="tab" [class.active]="activeTab === 'restaurar'" (click)="setActiveTab('restaurar')">
+        <div class="tab-icon">🔄</div>
+        <div class="tab-text">Restaurar</div>
+      </div>
+
       <div class="tab" [class.active]="activeTab === 'configuracion'" (click)="setActiveTab('configuracion')">
         <div class="tab-icon">⚙️</div>
         <div class="tab-text">Configuración</div>
+      </div>
+
+      <div class="tab" [class.active]="activeTab === 'permisos'" (click)="setActiveTab('permisos')">
+        <div class="tab-icon">🔒</div>
+        <div class="tab-text">Permisos</div>
       </div>
     </div>
 
@@ -31,78 +43,60 @@
       <!-- Exportar Datos -->
       <div class="tab-panel" [class.active]="activeTab === 'exportar'">
         <div class="card">
-          <div class="card-header"><h3>Exportar Datos</h3></div>
+          <div class="card-header">
+            <h3>Exportar Datos</h3>
+          </div>
           <div class="card-body">
-            <p class="section-description">
-              Exporte sus datos a diferentes formatos para su análisis o respaldo.
-            </p>
-            <div class="export-options">
-              <!-- Selección de entidades -->
-              <div class="export-section">
-                <h4>Seleccione los datos a exportar</h4>
+            <p>Seleccione las entidades que desea exportar y el formato de salida.</p>
+
+            <div class="config-section">
+              <h4>Entidades a Exportar</h4>
+              <div class="form-group">
                 <div class="form-check">
-                  <input type="checkbox" id="exportClientes" [(ngModel)]="exportOptions.clientes" class="form-check-input">
-                  <label for="exportClientes" class="form-check-label">Clientes</label>
+                  <input type="checkbox" id="exp-clientes" [(ngModel)]="exportOptions.clientes" class="form-check-input">
+                  <label for="exp-clientes" class="form-check-label">Clientes</label>
                 </div>
                 <div class="form-check">
-                  <input type="checkbox" id="exportProductos" [(ngModel)]="exportOptions.productos" class="form-check-input">
-                  <label for="exportProductos" class="form-check-label">Productos</label>
+                  <input type="checkbox" id="exp-productos" [(ngModel)]="exportOptions.productos" class="form-check-input">
+                  <label for="exp-productos" class="form-check-label">Productos</label>
                 </div>
                 <div class="form-check">
-                  <input type="checkbox" id="exportPedidos" [(ngModel)]="exportOptions.pedidos" class="form-check-input">
-                  <label for="exportPedidos" class="form-check-label">Pedidos</label>
+                  <input type="checkbox" id="exp-pedidos" [(ngModel)]="exportOptions.pedidos" class="form-check-input">
+                  <label for="exp-pedidos" class="form-check-label">Pedidos</label>
                 </div>
                 <div class="form-check">
-                  <input type="checkbox" id="exportRepartidores" [(ngModel)]="exportOptions.repartidores" class="form-check-input">
-                  <label for="exportRepartidores" class="form-check-label">Repartidores</label>
+                  <input type="checkbox" id="exp-repartidores" [(ngModel)]="exportOptions.repartidores" class="form-check-input">
+                  <label for="exp-repartidores" class="form-check-label">Repartidores</label>
                 </div>
                 <div class="form-check">
-                  <input type="checkbox" id="exportAdministradores" [(ngModel)]="exportOptions.administradores" class="form-check-input">
-                  <label for="exportAdministradores" class="form-check-label">Administradores</label>
-                </div>
-              </div>
-              <!-- Formato -->
-              <div class="export-section">
-                <h4>Formato de exportación</h4>
-                <div class="form-check">
-                  <input type="radio" id="formatCSV" name="exportFormat"
-                         [(ngModel)]="exportOptions.format" value="csv" class="form-check-input">
-                  <label for="formatCSV" class="form-check-label">CSV</label>
-                </div>
-                <div class="form-check">
-                  <input type="radio" id="formatExcel" name="exportFormat"
-                         [(ngModel)]="exportOptions.format" value="excel" class="form-check-input">
-                  <label for="formatExcel" class="form-check-label">Excel</label>
-                </div>
-                <div class="form-check">
-                  <input type="radio" id="formatJSON" name="exportFormat"
-                         [(ngModel)]="exportOptions.format" value="json" class="form-check-input">
-                  <label for="formatJSON" class="form-check-label">JSON</label>
-                </div>
-              </div>
-              <!-- Opciones adicionales -->
-              <div class="export-section">
-                <h4>Opciones adicionales</h4>
-                <div class="form-check">
-                  <input type="checkbox" id="includeHeaders"
-                         [(ngModel)]="exportOptions.includeHeaders" class="form-check-input">
-                  <label for="includeHeaders" class="form-check-label">
-                    Incluir encabezados (CSV/Excel)
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input type="checkbox" id="compressFiles"
-                         [(ngModel)]="exportOptions.compress" class="form-check-input">
-                  <label for="compressFiles" class="form-check-label">
-                    Comprimir archivos (ZIP)
-                  </label>
+                  <input type="checkbox" id="exp-administradores" [(ngModel)]="exportOptions.administradores" class="form-check-input">
+                  <label for="exp-administradores" class="form-check-label">Administradores</label>
                 </div>
               </div>
             </div>
+
+            <div class="config-section">
+              <h4>Opciones de Exportación</h4>
+              <div class="form-group">
+                <label for="exp-format" class="form-label">Formato</label>
+                <select id="exp-format" [(ngModel)]="exportOptions.format" class="form-control">
+                  <option value="csv">CSV</option>
+                  <option value="json">JSON</option>
+                  <option value="xml">XML</option>
+                </select>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="exp-headers" [(ngModel)]="exportOptions.includeHeaders" class="form-check-input">
+                <label for="exp-headers" class="form-check-label">Incluir encabezados</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="exp-compress" [(ngModel)]="exportOptions.compress" class="form-check-input">
+                <label for="exp-compress" class="form-check-label">Comprimir archivo</label>
+              </div>
+            </div>
+
             <div class="form-actions">
-              <button class="btn btn-primary" (click)="exportarDatos()">
-                Exportar Datos
-              </button>
+              <button type="button" class="btn btn-primary" (click)="exportarDatos()">Exportar Datos</button>
             </div>
           </div>
         </div>
@@ -111,384 +105,493 @@
       <!-- Importar Datos -->
       <div class="tab-panel" [class.active]="activeTab === 'importar'">
         <div class="card">
-          <div class="card-header"><h3>Importar Datos</h3></div>
+          <div class="card-header">
+            <h3>Importar Datos</h3>
+          </div>
           <div class="card-body">
-            <p class="section-description">Importe datos desde archivos externos para actualizar su sistema.</p>
-            <div class="import-options">
-              <div class="import-section">
-                <h4>Seleccione el tipo de datos a importar</h4>
-                <select [(ngModel)]="importOptions.dataType" class="form-control">
-                  <option value="clientes">Clientes</option>
+            <p>Seleccione el tipo de datos a importar y el archivo correspondiente.</p>
+
+            <div class="config-section">
+              <h4>Opciones de Importación</h4>
+              <div class="form-group">
+                <label for="imp-type" class="form-label">Tipo de Datos</label>
+                <select id="imp-type" [(ngModel)]="importOptions.dataType" class="form-control">
                   <option value="productos">Productos</option>
+                  <option value="clientes">Clientes</option>
                   <option value="pedidos">Pedidos</option>
                   <option value="repartidores">Repartidores</option>
                   <option value="administradores">Administradores</option>
                 </select>
               </div>
-              <div class="import-section">
-                <h4>Seleccione el archivo</h4>
-                <input type="file" (change)="onImportFileSelected($event)" class="form-control-file">
-                <small class="form-text text-muted">
-                  {{ importFileName || 'Formatos soportados: CSV, Excel, JSON' }}
-                </small>
+              <div class="form-check">
+                <input type="checkbox" id="imp-update" [(ngModel)]="importOptions.updateExisting" class="form-check-input">
+                <label for="imp-update" class="form-check-label">Actualizar registros existentes</label>
               </div>
-              <div class="import-section">
-                <h4>Opciones de importación</h4>
-                <div class="form-check">
-                  <input type="checkbox" id="updateExisting"
-                         [(ngModel)]="importOptions.updateExisting" class="form-check-input">
-                  <label for="updateExisting" class="form-check-label">
-                    Actualizar registros existentes
-                  </label>
+              <div class="form-check">
+                <input type="checkbox" id="imp-skip" [(ngModel)]="importOptions.skipErrors" class="form-check-input">
+                <label for="imp-skip" class="form-check-label">Omitir errores</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="imp-headers" [(ngModel)]="importOptions.hasHeaders" class="form-check-input">
+                <label for="imp-headers" class="form-check-label">El archivo tiene encabezados</label>
+              </div>
+            </div>
+
+            <div class="config-section">
+              <h4>Archivo a Importar</h4>
+              <div class="form-group">
+                <div class="file-input-container">
+                  <button class="btn btn-outline">Seleccionar Archivo</button>
+                  <input type="file" (change)="onImportFileSelected($event)">
                 </div>
-                <div class="form-check">
-                  <input type="checkbox" id="skipErrors"
-                         [(ngModel)]="importOptions.skipErrors" class="form-check-input">
-                  <label for="skipErrors" class="form-check-label">
-                    Omitir errores y continuar
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input type="checkbox" id="hasHeaders"
-                         [(ngModel)]="importOptions.hasHeaders" class="form-check-input">
-                  <label for="hasHeaders" class="form-check-label">
-                    El archivo contiene encabezados
-                  </label>
+                <div *ngIf="importFileName" class="selected-file">
+                  Archivo seleccionado: {{ importFileName }}
                 </div>
               </div>
             </div>
+
             <div class="form-actions">
-              <button class="btn btn-outline" (click)="resetImportForm()">Cancelar</button>
-              <button class="btn btn-primary"
-                      [disabled]="!importFile"
-                      (click)="importarDatos()">
-                Importar Datos
-              </button>
+              <button type="button" class="btn btn-outline" (click)="resetImportForm()">Cancelar</button>
+              <button type="button" class="btn btn-primary" [disabled]="!importFile" (click)="importarDatos()">Importar Datos</button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Respaldo y Restauración -->
+      <!-- Respaldo -->
       <div class="tab-panel" [class.active]="activeTab === 'respaldo'">
         <div class="card">
-          <div class="card-header"><h3>Respaldo y Restauración</h3></div>
+          <div class="card-header">
+            <h3>Crear Respaldo</h3>
+          </div>
           <div class="card-body">
-            <p class="section-description">
-              Cree copias de seguridad de sus datos y restáurelos cuando sea necesario.
-            </p>
+            <p>Cree un respaldo completo o parcial de los datos del sistema.</p>
 
-            <div class="backup-section">
-              <h4>Crear Respaldo</h4>
-              <div class="form-check">
-                <input type="radio" name="backupType" id="backupFull"
-                       [(ngModel)]="backupOptions.type" value="full" class="form-check-input">
-                <label for="backupFull" class="form-check-label">Respaldo completo</label>
-              </div>
-              <div class="form-check">
-                <input type="radio" name="backupType" id="backupPartial"
-                       [(ngModel)]="backupOptions.type" value="partial" class="form-check-input">
-                <label for="backupPartial" class="form-check-label">Respaldo parcial</label>
-              </div>
-              <div *ngIf="backupOptions.type === 'partial'" class="mt-2">
+            <div class="config-section">
+              <h4>Tipo de Respaldo</h4>
+              <div class="form-group">
                 <div class="form-check">
-                  <input type="checkbox" id="backupClientes"
-                         [(ngModel)]="backupOptions.clientes" class="form-check-input">
-                  <label for="backupClientes" class="form-check-label">Clientes</label>
+                  <input type="radio" id="backup-full" name="backupType" [(ngModel)]="backupOptions.type" value="full" class="form-check-input">
+                  <label for="backup-full" class="form-check-label">Respaldo Completo</label>
                 </div>
                 <div class="form-check">
-                  <input type="checkbox" id="backupProductos"
-                         [(ngModel)]="backupOptions.productos" class="form-check-input">
-                  <label for="backupProductos" class="form-check-label">Productos</label>
-                </div>
-                <div class="form-check">
-                  <input type="checkbox" id="backupPedidos"
-                         [(ngModel)]="backupOptions.pedidos" class="form-check-input">
-                  <label for="backupPedidos" class="form-check-label">Pedidos</label>
-                </div>
-                <div class="form-check">
-                  <input type="checkbox" id="backupAdministradores"
-                         [(ngModel)]="backupOptions.administradores" class="form-check-input">
-                  <label for="backupAdministradores" class="form-check-label">Administradores</label>
+                  <input type="radio" id="backup-partial" name="backupType" [(ngModel)]="backupOptions.type" value="partial" class="form-check-input">
+                  <label for="backup-partial" class="form-check-label">Respaldo Parcial</label>
                 </div>
               </div>
-              <div class="form-group mt-2">
-                <label for="backupDescription">Descripción (opcional)</label>
-                <input id="backupDescription" [(ngModel)]="backupOptions.description"
-                       class="form-control" placeholder="Ej: Respaldo mensual">
-              </div>
-              <button class="btn btn-primary mt-2" (click)="crearRespaldo()">
-                Crear Respaldo
-              </button>
             </div>
 
-            <div class="restore-section mt-4">
-              <h4>Respaldos disponibles</h4>
-              <div *ngFor="let b of backups"
-                   class="backup-item"
-                   [class.selected]="selectedBackup === b.id"
-                   (click)="seleccionarBackup(b.id)">
-                <div>
-                  {{ b.createdAt | date:'dd/MM/yyyy HH:mm' }} —
-                  {{ b.type === 'full' ? 'Completo' : 'Parcial' }} —
-                  {{ b.description || 'Sin descripción' }}
-                </div>
-                <button class="btn btn-sm btn-outline-secondary"
-                        (click)="descargarRespaldo(b.id); $event.stopPropagation()">
-                  Descargar
-                </button>
-              </div>
-              <div *ngIf="backups.length===0" class="text-muted">
-                No hay respaldos disponibles
-              </div>
-
-              <div *ngIf="selectedBackup" class="mt-2">
+            <div class="config-section" *ngIf="backupOptions.type === 'partial'">
+              <h4>Entidades a Respaldar</h4>
+              <div class="form-group">
                 <div class="form-check">
-                  <input type="checkbox" id="confirmRestore" [(ngModel)]="restoreConfirmed" class="form-check-input">
-                  <label for="confirmRestore" class="form-check-label">
-                    Confirmo restaurar datos (acción irreversible)
-                  </label>
+                  <input type="checkbox" id="backup-clientes" [(ngModel)]="backupOptions.clientes" class="form-check-input">
+                  <label for="backup-clientes" class="form-check-label">Clientes</label>
                 </div>
-                <button class="btn btn-warning mt-2"
-                        [disabled]="!restoreConfirmed"
-                        (click)="restaurarDatos()">
-                  Restaurar
-                </button>
+                <div class="form-check">
+                  <input type="checkbox" id="backup-productos" [(ngModel)]="backupOptions.productos" class="form-check-input">
+                  <label for="backup-productos" class="form-check-label">Productos</label>
+                </div>
+                <div class="form-check">
+                  <input type="checkbox" id="backup-pedidos" [(ngModel)]="backupOptions.pedidos" class="form-check-input">
+                  <label for="backup-pedidos" class="form-check-label">Pedidos</label>
+                </div>
+                <div class="form-check">
+                  <input type="checkbox" id="backup-repartidores" [(ngModel)]="backupOptions.repartidores" class="form-check-input">
+                  <label for="backup-repartidores" class="form-check-label">Repartidores</label>
+                </div>
+                <div class="form-check">
+                  <input type="checkbox" id="backup-administradores" [(ngModel)]="backupOptions.administradores" class="form-check-input">
+                  <label for="backup-administradores" class="form-check-label">Administradores</label>
+                </div>
               </div>
+            </div>
 
-              <div class="mt-3">
-                <h4>O restaure desde archivo</h4>
-                <input type="file" (change)="onRestoreFileSelected($event)" class="form-control-file">
-                <button class="btn btn-warning mt-2"
-                        [disabled]="!restoreFile"
-                        (click)="restaurarDesdeArchivo()">
-                  Restaurar desde archivo
-                </button>
+            <div class="config-section">
+              <h4>Descripción</h4>
+              <div class="form-group">
+                <textarea [(ngModel)]="backupOptions.description" class="form-control" rows="3" placeholder="Descripción opcional del respaldo"></textarea>
               </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-primary" (click)="crearRespaldo()">Crear Respaldo</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-4">
+          <div class="card-header">
+            <h3>Historial de Respaldos</h3>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Fecha</th>
+                  <th>Tipo</th>
+                  <th>Descripción</th>
+                  <th>Tamaño</th>
+                  <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let backup of backups">
+                  <td>{{ backup.id }}</td>
+                  <td>{{ backup.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                  <td>{{ backup.type === 'full' ? 'Completo' : 'Parcial' }}</td>
+                  <td>{{ backup.description || 'Sin descripción' }}</td>
+                  <td>{{ backup.sizeBytes | number }} KB</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline" (click)="descargarRespaldo(backup.id)" title="Descargar">📥</button>
+                    <button class="btn btn-sm btn-primary" (click)="seleccionarBackup(backup.id)" title="Restaurar">🔄</button>
+                  </td>
+                </tr>
+                <tr *ngIf="backups.length === 0">
+                  <td colspan="6" class="text-center">No hay respaldos disponibles</td>
+                </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Restaurar -->
+      <div class="tab-panel" [class.active]="activeTab === 'restaurar'">
+        <div class="card" *ngIf="selectedBackup !== null">
+          <div class="card-header">
+            <h3>Restaurar desde Respaldo</h3>
+          </div>
+          <div class="card-body">
+            <div class="alert alert-warning">
+              <strong>¡Advertencia!</strong> La restauración sobrescribirá los datos actuales. Esta acción no se puede deshacer.
+            </div>
+
+            <p>Está a punto de restaurar desde el respaldo #{{ selectedBackup }}.</p>
+
+            <div class="form-group">
+              <div class="form-check">
+                <input type="checkbox" id="confirm-restore" [(ngModel)]="restoreConfirmed" class="form-check-input">
+                <label for="confirm-restore" class="form-check-label">Confirmo que deseo restaurar los datos y entiendo que esta acción no se puede deshacer.</label>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-outline" (click)="selectedBackup = null">Cancelar</button>
+              <button type="button" class="btn btn-danger" [disabled]="!restoreConfirmed" (click)="restaurarDatos()">Restaurar Datos</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" *ngIf="selectedBackup === null">
+          <div class="card-header">
+            <h3>Restaurar desde Archivo</h3>
+          </div>
+          <div class="card-body">
+            <div class="alert alert-warning">
+              <strong>¡Advertencia!</strong> La restauración sobrescribirá los datos actuales. Esta acción no se puede deshacer.
+            </div>
+
+            <div class="config-section">
+              <h4>Archivo de Respaldo</h4>
+              <div class="form-group">
+                <div class="file-input-container">
+                  <button class="btn btn-outline">Seleccionar Archivo</button>
+                  <input type="file" (change)="onRestoreFileSelected($event)" accept=".zip">
+                </div>
+                <div *ngIf="restoreFileName" class="selected-file">
+                  Archivo seleccionado: {{ restoreFileName }}
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="form-check">
+                <input type="checkbox" id="confirm-restore-file" [(ngModel)]="restoreConfirmed" class="form-check-input">
+                <label for="confirm-restore-file" class="form-check-label">Confirmo que deseo restaurar los datos y entiendo que esta acción no se puede deshacer.</label>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-danger" [disabled]="!restoreFile || !restoreConfirmed" (click)="restaurarDesdeArchivo()">Restaurar desde Archivo</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Configuración -->
       <div class="tab-panel" [class.active]="activeTab === 'configuracion'">
-        <div class="card">
-          <div class="card-header">
-            <h3>Configuración del Sistema</h3>
-          </div>
-
-          <div class="card-body">
-            <p class="section-description">Personalice la configuración de su aplicación.</p>
-
-            <div class="accordion-container">
-              <!-- Configuración General -->
-              <div class="accordion-item" [class.active]="activeAccordion === 'general'">
-                <div class="accordion-header" (click)="toggleAccordion('general')">
-                  <h4>Configuración General</h4>
-                  <span class="accordion-icon">{{ activeAccordion === 'general' ? '▼' : '▶' }}</span>
-                </div>
-                <div class="accordion-content" [class.expanded]="activeAccordion === 'general'">
-                  <form [formGroup]="generalForm" (ngSubmit)="guardarConfiguracionGeneral()">
+        <div class="accordion">
+          <div class="accordion-item" [class.active]="activeAccordion === 'general'">
+            <div class="accordion-header" (click)="toggleAccordion('general')">
+              <h4>Configuración General</h4>
+              <span class="accordion-icon" [class.rotated]="activeAccordion === 'general'">▼</span>
+            </div>
+            <div class="accordion-content" [class.expanded]="activeAccordion === 'general'">
+              <form [formGroup]="generalForm" (ngSubmit)="guardarConfiguracionGeneral()">
+                <div class="row">
+                  <div class="col">
                     <div class="form-group">
-                      <label class="form-label" for="nombreNegocio">Nombre del Negocio</label>
+                      <label for="nombreNegocio" class="form-label">Nombre del Negocio</label>
                       <input type="text" id="nombreNegocio" formControlName="nombreNegocio" class="form-control">
                     </div>
-
+                  </div>
+                  <div class="col">
                     <div class="form-group">
-                      <label class="form-label" for="direccion">Dirección</label>
+                      <label for="direccion" class="form-label">Dirección</label>
                       <input type="text" id="direccion" formControlName="direccion" class="form-control">
                     </div>
-
-                    <div class="form-row">
-                      <div class="form-group col-md-6">
-                        <label class="form-label" for="telefono">Teléfono</label>
-                        <input type="text" id="telefono" formControlName="telefono" class="form-control">
-                      </div>
-                      <div class="form-group col-md-6">
-                        <label class="form-label" for="email">Email</label>
-                        <input type="email" id="email" formControlName="email" class="form-control">
-                      </div>
-                    </div>
-
-                    <div class="form-row">
-                      <div class="form-group col-md-6">
-                        <label class="form-label" for="moneda">Moneda</label>
-                        <select id="moneda" formControlName="moneda" class="form-control">
-                          <option value="USD">Dólar (USD)</option>
-                          <option value="EUR">Euro (EUR)</option>
-                          <option value="MXN">Peso Mexicano (MXN)</option>
-                          <option value="COP">Peso Colombiano (COP)</option>
-                          <option value="ARS">Peso Argentino (ARS)</option>
-                        </select>
-                      </div>
-                      <div class="form-group col-md-6">
-                        <label class="form-label" for="zonaHoraria">Zona Horaria</label>
-                        <select id="zonaHoraria" formControlName="zonaHoraria" class="form-control">
-                          <option value="America/Mexico_City">Ciudad de México (GMT-6)</option>
-                          <option value="America/Bogota">Bogotá (GMT-5)</option>
-                          <option value="America/New_York">Nueva York (GMT-5)</option>
-                          <option value="America/Buenos_Aires">Buenos Aires (GMT-3)</option>
-                          <option value="Europe/Madrid">Madrid (GMT+1)</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div class="form-actions">
-                      <button type="submit" class="btn btn-primary">Guardar Configuración</button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-
-              <!-- Tema de Color -->
-              <div class="accordion-item" [class.active]="activeAccordion === 'tema'">
-                <div class="accordion-header" (click)="toggleAccordion('tema')">
-                  <h4>Tema de Color</h4>
-                  <span class="accordion-icon">{{ activeAccordion === 'tema' ? '▼' : '▶' }}</span>
-                </div>
-                <div class="accordion-content" [class.expanded]="activeAccordion === 'tema'">
-                  <form [formGroup]="temaForm" (ngSubmit)="guardarTema()">
-                    <div class="form-group">
-                      <label class="form-label">Seleccione un Tema</label>
-                      <div class="tema-options">
-                        <div class="tema-option" [class.selected]="temaForm['controls']['tema'].value === 'default'" (click)="seleccionarTema('default')">
-                          <div class="tema-preview default-theme">
-                            <div class="tema-color primary"></div>
-                            <div class="tema-color secondary"></div>
-                          </div>
-                          <div class="tema-label">Predeterminado</div>
-                        </div>
-                        <div class="tema-option" [class.selected]="temaForm['controls']['tema'].value === 'dark'" (click)="seleccionarTema('dark')">
-                          <div class="tema-preview dark-theme">
-                            <div class="tema-color primary"></div>
-                            <div class="tema-color secondary"></div>
-                          </div>
-                          <div class="tema-label">Oscuro</div>
-                        </div>
-                        <div class="tema-option" [class.selected]="temaForm['controls']['tema'].value === 'light'" (click)="seleccionarTema('light')">
-                          <div class="tema-preview light-theme">
-                            <div class="tema-color primary"></div>
-                            <div class="tema-color secondary"></div>
-                          </div>
-                          <div class="tema-label">Claro</div>
-                        </div>
-                        <div class="tema-option" [class.selected]="temaForm['controls']['tema'].value === 'colorful'" (click)="seleccionarTema('colorful')">
-                          <div class="tema-preview colorful-theme">
-                            <div class="tema-color primary"></div>
-                            <div class="tema-color secondary"></div>
-                          </div>
-                          <div class="tema-label">Colorido</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label class="form-label">Personalizar Colores</label>
-                      <div class="form-row">
-                        <div class="form-group col-md-6">
-                          <label class="form-label" for="colorPrimario">Color Primario</label>
-                          <input type="color" id="colorPrimario" formControlName="colorPrimario" class="form-control color-picker">
-                        </div>
-                        <div class="form-group col-md-6">
-                          <label class="form-label" for="colorSecundario">Color Secundario</label>
-                          <input type="color" id="colorSecundario" formControlName="colorSecundario" class="form-control color-picker">
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="form-actions">
-                      <button type="button" class="btn btn-outline" (click)="resetearTema()">Restablecer</button>
-                      <button type="submit" class="btn btn-primary">Aplicar Tema</button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-
-              <!-- Permisos de Usuario -->
-              <div class="accordion-item" [class.active]="activeAccordion === 'permisos'">
-                <div class="accordion-header" (click)="toggleAccordion('permisos')">
-                  <h4>Permisos de Usuario</h4>
-                  <span class="accordion-icon">{{ activeAccordion === 'permisos' ? '▼' : '▶' }}</span>
-                </div>
-                <div class="accordion-content" [class.expanded]="activeAccordion === 'permisos'">
-                  <div class="permisos-table">
-                    <table class="table">
-                      <thead>
-                      <tr>
-                        <th>Módulo</th>
-                        <th>Administrador</th>
-                        <th>Supervisor</th>
-                        <th>Operador</th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      <tr *ngFor="let permiso of permisos">
-                        <td>{{ permiso.modulo }}</td>
-                        <td>
-                          <input type="checkbox" [checked]="permiso.admin" (change)="permiso.admin = !permiso.admin">
-                        </td>
-                        <td>
-                          <input type="checkbox" [checked]="permiso.supervisor" (change)="permiso.supervisor = !permiso.supervisor">
-                        </td>
-                        <td>
-                          <input type="checkbox" [checked]="permiso.operador" (change)="permiso.operador = !permiso.operador">
-                        </td>
-                      </tr>
-                      </tbody>
-                    </table>
-                  </div>
-
-                  <div class="form-actions">
-                    <button class="btn btn-primary" (click)="guardarPermisos()">Guardar Permisos</button>
                   </div>
                 </div>
-              </div>
-
-              <!-- Notificaciones -->
-              <div class="accordion-item" [class.active]="activeAccordion === 'notificaciones'">
-                <div class="accordion-header" (click)="toggleAccordion('notificaciones')">
-                  <h4>Notificaciones</h4>
-                  <span class="accordion-icon">{{ activeAccordion === 'notificaciones' ? '▼' : '▶' }}</span>
+                <div class="row">
+                  <div class="col">
+                    <div class="form-group">
+                      <label for="telefono" class="form-label">Teléfono</label>
+                      <input type="text" id="telefono" formControlName="telefono" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="form-group">
+                      <label for="email" class="form-label">Email</label>
+                      <input type="email" id="email" formControlName="email" class="form-control">
+                    </div>
+                  </div>
                 </div>
-                <div class="accordion-content" [class.expanded]="activeAccordion === 'notificaciones'">
-                  <form [formGroup]="notificacionesForm" (ngSubmit)="guardarNotificaciones()">
+                <div class="row">
+                  <div class="col">
                     <div class="form-group">
-                      <label class="form-label">Notificaciones de Pedidos</label>
-                      <div class="form-check">
-                        <input type="checkbox" id="notificarNuevosPedidos" formControlName="notificarNuevosPedidos" class="form-check-input">
-                        <label class="form-check-label" for="notificarNuevosPedidos">Notificar nuevos pedidos</label>
-                      </div>
-                      <div class="form-check">
-                        <input type="checkbox" id="notificarCambiosEstado" formControlName="notificarCambiosEstado" class="form-check-input">
-                        <label class="form-check-label" for="notificarCambiosEstado">Notificar cambios de estado en pedidos</label>
-                      </div>
+                      <label for="moneda" class="form-label">Moneda</label>
+                      <select id="moneda" formControlName="moneda" class="form-control">
+                        <option value="USD">Dólar (USD)</option>
+                        <option value="EUR">Euro (EUR)</option>
+                        <option value="MXN">Peso Mexicano (MXN)</option>
+                        <option value="ARS">Peso Argentino (ARS)</option>
+                      </select>
                     </div>
-
+                  </div>
+                  <div class="col">
                     <div class="form-group">
-                      <label class="form-label">Notificaciones de Inventario</label>
-                      <div class="form-check">
-                        <input type="checkbox" id="notificarStockBajo" formControlName="notificarStockBajo" class="form-check-input">
-                        <label class="form-check-label" for="notificarStockBajo">Notificar cuando el stock esté bajo</label>
-                      </div>
-                      <div class="form-group" *ngIf="notificacionesForm['controls']?.['notificarStockBajo']?.value">
-                        <label class="form-label" for="umbralStockBajo">Umbral de stock bajo</label>
-                        <input type="number" id="umbralStockBajo" formControlName="umbralStockBajo" class="form-control" min="1">
-                      </div>
+                      <label for="zonaHoraria" class="form-label">Zona Horaria</label>
+                      <select id="zonaHoraria" formControlName="zonaHoraria" class="form-control">
+                        <option value="America/Mexico_City">Ciudad de México (GMT-6)</option>
+                        <option value="America/New_York">Nueva York (GMT-5)</option>
+                        <option value="America/Buenos_Aires">Buenos Aires (GMT-3)</option>
+                        <option value="Europe/Madrid">Madrid (GMT+1)</option>
+                      </select>
                     </div>
-
-                    <div class="form-group">
-                      <label class="form-label">Métodos de Notificación</label>
-                      <div class="form-check">
-                        <input type="checkbox" id="notificarEmail" formControlName="notificarEmail" class="form-check-input">
-                        <label class="form-check-label" for="notificarEmail">Recibir notificaciones por email</label>
-                      </div>
-                    </div>
-
-                    <div class="form-actions">
-                      <button type="submit" class="btn btn-primary">Guardar Configuración</button>
-                    </div>
-                  </form>
+                  </div>
                 </div>
-              </div>
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">Guardar Configuración</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="accordion-item" [class.active]="activeAccordion === 'tema'">
+            <div class="accordion-header" (click)="toggleAccordion('tema')">
+              <h4>Tema de Color</h4>
+              <span class="accordion-icon" [class.rotated]="activeAccordion === 'tema'">▼</span>
+            </div>
+            <div class="accordion-content" [class.expanded]="activeAccordion === 'tema'">
+              <form [formGroup]="temaForm" (ngSubmit)="guardarTema()">
+                <div class="theme-options">
+                  <div class="theme-option" [class.active]="temaForm.get('tema')?.value === 'default'" (click)="seleccionarTema('default')">
+                    <div class="theme-preview">
+                      <div class="theme-header" style="background-color: #E76F51;"></div>
+                      <div class="theme-sidebar" style="background-color: #ffffff;"></div>
+                      <div class="theme-content" style="background-color: #f8f9fa;"></div>
+                    </div>
+                    <div class="theme-name">Tema Predeterminado</div>
+                    <div class="theme-check">✓</div>
+                  </div>
+
+                  <div class="theme-option" [class.active]="temaForm.get('tema')?.value === 'dark'" (click)="seleccionarTema('dark')">
+                    <div class="theme-preview">
+                      <div class="theme-header" style="background-color: #2D3748;"></div>
+                      <div class="theme-sidebar" style="background-color: #1A202C;"></div>
+                      <div class="theme-content" style="background-color: #2D3748;"></div>
+                    </div>
+                    <div class="theme-name">Tema Oscuro</div>
+                    <div class="theme-check">✓</div>
+                  </div>
+
+                  <div class="theme-option" [class.active]="temaForm.get('tema')?.value === 'light'" (click)="seleccionarTema('light')">
+                    <div class="theme-preview">
+                      <div class="theme-header" style="background-color: #EDF2F7;"></div>
+                      <div class="theme-sidebar" style="background-color: #F7FAFC;"></div>
+                      <div class="theme-content" style="background-color: #FFFFFF;"></div>
+                    </div>
+                    <div class="theme-name">Tema Claro</div>
+                    <div class="theme-check">✓</div>
+                  </div>
+
+                  <div class="theme-option" [class.active]="temaForm.get('tema')?.value === 'colorful'" (click)="seleccionarTema('colorful')">
+                    <div class="theme-preview">
+                      <div class="theme-header" style="background-color: #6B46C1;"></div>
+                      <div class="theme-sidebar" style="background-color: #EDF2F7;"></div>
+                      <div class="theme-content" style="background-color: #F7FAFC;"></div>
+                    </div>
+                    <div class="theme-name">Tema Colorido</div>
+                    <div class="theme-check">✓</div>
+                  </div>
+                </div>
+
+                <div class="row mt-4">
+                  <div class="col">
+                    <div class="form-group">
+                      <label for="colorPrimario" class="form-label">Color Primario</label>
+                      <input type="color" id="colorPrimario" formControlName="colorPrimario" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="form-group">
+                      <label for="colorSecundario" class="form-label">Color Secundario</label>
+                      <input type="color" id="colorSecundario" formControlName="colorSecundario" class="form-control">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button type="button" class="btn btn-outline" (click)="resetearTema()">Restaurar Tema</button>
+                  <button type="button" class="btn btn-primary" (click)="aplicarTema()">Aplicar Tema</button>
+                  <button type="submit" class="btn btn-primary">Guardar Tema</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="accordion-item" [class.active]="activeAccordion === 'notificaciones'">
+            <div class="accordion-header" (click)="toggleAccordion('notificaciones')">
+              <h4>Notificaciones</h4>
+              <span class="accordion-icon" [class.rotated]="activeAccordion === 'notificaciones'">▼</span>
+            </div>
+            <div class="accordion-content" [class.expanded]="activeAccordion === 'notificaciones'">
+              <form [formGroup]="notificacionesForm" (ngSubmit)="guardarNotificaciones()">
+                <div class="notification-options">
+                  <div class="notification-option">
+                    <div class="notification-label">
+                      <div class="notification-icon">🛒</div>
+                      <div>
+                        <div class="notification-text">Nuevos Pedidos</div>
+                        <div class="notification-description">Recibir notificaciones cuando se registre un nuevo pedido</div>
+                      </div>
+                    </div>
+                    <label class="switch">
+                      <input type="checkbox" formControlName="notificarNuevosPedidos">
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+
+                  <div class="notification-option">
+                    <div class="notification-label">
+                      <div class="notification-icon">🔄</div>
+                      <div>
+                        <div class="notification-text">Cambios de Estado</div>
+                        <div class="notification-description">Recibir notificaciones cuando cambie el estado de un pedido</div>
+                      </div>
+                    </div>
+                    <label class="switch">
+                      <input type="checkbox" formControlName="notificarCambiosEstado">
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+
+                  <div class="notification-option">
+                    <div class="notification-label">
+                      <div class="notification-icon">📦</div>
+                      <div>
+                        <div class="notification-text">Stock Bajo</div>
+                        <div class="notification-description">Recibir alertas cuando un producto tenga stock bajo</div>
+                      </div>
+                    </div>
+                    <label class="switch">
+                      <input type="checkbox" formControlName="notificarStockBajo">
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+
+                  <div class="notification-option">
+                    <div class="notification-label">
+                      <div class="notification-icon">📧</div>
+                      <div>
+                        <div class="notification-text">Notificaciones por Email</div>
+                        <div class="notification-description">Recibir notificaciones también por correo electrónico</div>
+                      </div>
+                    </div>
+                    <label class="switch">
+                      <input type="checkbox" formControlName="notificarEmail">
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="form-group mt-4">
+                  <label for="umbralStockBajo" class="form-label">Umbral de Stock Bajo</label>
+                  <input type="number" id="umbralStockBajo" formControlName="umbralStockBajo" class="form-control" min="1">
+                  <small class="form-text text-muted">Cantidad mínima antes de mostrar alertas de stock bajo</small>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">Guardar Configuración</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Permisos -->
+      <div class="tab-panel" [class.active]="activeTab === 'permisos'">
+        <div class="card">
+          <div class="card-header">
+            <h3>Gestión de Permisos</h3>
+          </div>
+          <div class="card-body">
+            <p>Configure los permisos de acceso para cada rol del sistema.</p>
+
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th>Módulo</th>
+                  <th>Administrador</th>
+                  <th>Supervisor</th>
+                  <th>Operador</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let permiso of permisos">
+                  <td>{{ permiso.modulo }}</td>
+                  <td>
+                    <div class="form-check">
+                      <input type="checkbox" [id]="'admin-' + permiso.id" [(ngModel)]="permiso.admin" class="form-check-input" disabled>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="form-check">
+                      <input type="checkbox" [id]="'supervisor-' + permiso.id" [(ngModel)]="permiso.supervisor" class="form-check-input">
+                    </div>
+                  </td>
+                  <td>
+                    <div class="form-check">
+                      <input type="checkbox" [id]="'operador-' + permiso.id" [(ngModel)]="permiso.operador" class="form-check-input">
+                    </div>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="alert alert-info mt-4">
+              <strong>Nota:</strong> Los permisos del rol Administrador no pueden ser modificados ya que tiene acceso completo al sistema.
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-primary" (click)="guardarPermisos()">Guardar Permisos</button>
             </div>
           </div>
         </div>

@@ -1,7 +1,8 @@
-<aside class="sidebar" [class.collapsed]="isSidebarCollapsed">
+<aside class="sidebar" [class.collapsed]="isSidebarCollapsed" [class.mobile-open]="isMobileOpen">
   <div class="sidebar-header">
     <div class="sidebar-logo">
       <img src="/assets/images/Logo-Panaderia.png" alt="Logo Panadería">
+      <div class="sidebar-logo-text">El Buen Sabor</div>
     </div>
   </div>
 
@@ -11,47 +12,44 @@
         <!-- Inicio -->
         <li class="nav-item">
           <a routerLink="/home" routerLinkActive="active" class="nav-link">
-            <i class="fas fa-home nav-icon"></i>
-            <span class="nav-text">🏠 Inicio</span>
+            <span class="nav-icon">🏠</span>
+            <span class="nav-text">Inicio</span>
           </a>
         </li>
 
         <!-- Menú desplegable: Entidades -->
         <li class="nav-item dropdown">
           <a (click)="toggleDropdown('entidades')" class="nav-link dropdown-toggle" [class.active]="isDropdownActive('entidades')">
-            <i class="fas fa-database nav-icon"></i>
-            <span class="nav-text">📋 Entidades</span>
-            <i class="fas fa-chevron-down dropdown-icon" [class.rotated]="isDropdownOpen('entidades')"></i>
+            <span class="nav-icon">📋</span>
+            <span class="nav-text">Entidades</span>
+            <i class="dropdown-icon" [class.rotated]="isDropdownOpen('entidades')">▼</i>
           </a>
           <ul class="dropdown-menu" [class.open]="isDropdownOpen('entidades')">
-            <li class="dropdown-item" [class.disabled]="!tienePermiso('Administradores')">
+            <li class="dropdown-item" [class.disabled]="!tienePermiso('Administradores')" [title]="!tienePermiso('Administradores') ? 'No tienes permiso para acceder a esta sección' : ''">
               <a routerLink="/entidades/administradores" routerLinkActive="active" class="dropdown-link"
-                 [class.disabled]="!tienePermiso('Administradores')"
-                 [title]="!tienePermiso('Administradores') ? 'No tienes permiso para acceder a esta sección' : ''">
-                <i class="fas fa-user-shield nav-icon"></i>
-                <span class="nav-text">👨‍💼 Administradores</span>
+                 [class.disabled]="!tienePermiso('Administradores')">
+                <span class="nav-icon">👨‍💼</span>
+                <span class="nav-text">Administradores</span>
               </a>
             </li>
-            <li class="dropdown-item" [class.disabled]="!tienePermiso('Clientes')">
+            <li class="dropdown-item" [class.disabled]="!tienePermiso('Clientes')" [title]="!tienePermiso('Clientes') ? 'No tienes permiso para acceder a esta sección' : ''">
               <a routerLink="/entidades/clientes" routerLinkActive="active" class="dropdown-link"
-                 [class.disabled]="!tienePermiso('Clientes')"
-                 [title]="!tienePermiso('Clientes') ? 'No tienes permiso para acceder a esta sección' : ''">
-                <i class="fas fa-users nav-icon"></i>
-                <span class="nav-text">👥 Clientes</span>
+                 [class.disabled]="!tienePermiso('Clientes')">
+                <span class="nav-icon">👥</span>
+                <span class="nav-text">Clientes</span>
               </a>
             </li>
             <li class="dropdown-item">
               <a routerLink="/entidades/productos" routerLinkActive="active" class="dropdown-link">
-                <i class="fas fa-bread-slice nav-icon"></i>
-                <span class="nav-text">🍞 Productos</span>
+                <span class="nav-icon">🍞</span>
+                <span class="nav-text">Productos</span>
               </a>
             </li>
-            <li class="dropdown-item" [class.disabled]="!tienePermiso('Repartidores')">
+            <li class="dropdown-item" [class.disabled]="!tienePermiso('Repartidores')" [title]="!tienePermiso('Repartidores') ? 'No tienes permiso para acceder a esta sección' : ''">
               <a routerLink="/entidades/repartidores" routerLinkActive="active" class="dropdown-link"
-                 [class.disabled]="!tienePermiso('Repartidores')"
-                 [title]="!tienePermiso('Repartidores') ? 'No tienes permiso para acceder a esta sección' : ''">
-                <i class="fas fa-truck nav-icon"></i>
-                <span class="nav-text">🚚 Repartidores</span>
+                 [class.disabled]="!tienePermiso('Repartidores')">
+                <span class="nav-icon">🚚</span>
+                <span class="nav-text">Repartidores</span>
               </a>
             </li>
           </ul>
@@ -60,15 +58,15 @@
         <!-- Menú desplegable: Transacciones -->
         <li class="nav-item dropdown">
           <a (click)="toggleDropdown('transacciones')" class="nav-link dropdown-toggle" [class.active]="isDropdownActive('transacciones')">
-            <i class="fas fa-exchange-alt nav-icon"></i>
-            <span class="nav-text">💰 Transacciones</span>
-            <i class="fas fa-chevron-down dropdown-icon" [class.rotated]="isDropdownOpen('transacciones')"></i>
+            <span class="nav-icon">💰</span>
+            <span class="nav-text">Transacciones</span>
+            <i class="dropdown-icon" [class.rotated]="isDropdownOpen('transacciones')">▼</i>
           </a>
           <ul class="dropdown-menu" [class.open]="isDropdownOpen('transacciones')">
             <li class="dropdown-item">
               <a routerLink="/transacciones/pedidos" routerLinkActive="active" class="dropdown-link">
-                <i class="fas fa-shopping-bag nav-icon"></i>
-                <span class="nav-text">🛒 Pedidos</span>
+                <span class="nav-icon">🛒</span>
+                <span class="nav-text">Pedidos</span>
               </a>
             </li>
           </ul>
@@ -77,21 +75,21 @@
         <!-- Menú desplegable: Reportes/Consultas -->
         <li class="nav-item dropdown">
           <a (click)="toggleDropdown('reportes')" class="nav-link dropdown-toggle" [class.active]="isDropdownActive('reportes')">
-            <i class="fas fa-chart-bar nav-icon"></i>
-            <span class="nav-text">📊 Reportes/Consultas</span>
-            <i class="fas fa-chevron-down dropdown-icon" [class.rotated]="isDropdownOpen('reportes')"></i>
+            <span class="nav-icon">📊</span>
+            <span class="nav-text">Reportes/Consultas</span>
+            <i class="dropdown-icon" [class.rotated]="isDropdownOpen('reportes')">▼</i>
           </a>
           <ul class="dropdown-menu" [class.open]="isDropdownOpen('reportes')">
             <li class="dropdown-item">
               <a routerLink="/reportes-consultas/ventas" routerLinkActive="active" class="dropdown-link">
-                <i class="fas fa-chart-line nav-icon"></i>
-                <span class="nav-text">📈 Reporte de Ventas</span>
+                <span class="nav-icon">📈</span>
+                <span class="nav-text">Reporte de Ventas</span>
               </a>
             </li>
             <li class="dropdown-item">
               <a routerLink="/reportes-consultas/productos" routerLinkActive="active" class="dropdown-link">
-                <i class="fas fa-chart-pie nav-icon"></i>
-                <span class="nav-text">📉 Reporte de Productos</span>
+                <span class="nav-icon">📉</span>
+                <span class="nav-text">Reporte de Productos</span>
               </a>
             </li>
           </ul>
@@ -100,20 +98,19 @@
         <li class="nav-divider"></li>
 
         <!-- Utilidades -->
-        <li class="nav-item" [class.disabled]="!tienePermiso('Configuración')">
+        <li class="nav-item" [class.disabled]="!tienePermiso('Configuración')" [title]="!tienePermiso('Configuración') ? 'No tienes permiso para acceder a esta sección' : ''">
           <a routerLink="/utilidades" routerLinkActive="active" class="nav-link"
-             [class.disabled]="!tienePermiso('Configuración')"
-             [title]="!tienePermiso('Configuración') ? 'No tienes permiso para acceder a esta sección' : ''">
-            <i class="fas fa-cog nav-icon"></i>
-            <span class="nav-text">⚙️ Utilidades</span>
+             [class.disabled]="!tienePermiso('Configuración')">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-text">Utilidades</span>
           </a>
         </li>
 
         <!-- Ayuda -->
         <li class="nav-item">
           <a routerLink="/ayuda" routerLinkActive="active" class="nav-link">
-            <i class="fas fa-question-circle nav-icon"></i>
-            <span class="nav-text">❓ Ayuda</span>
+            <span class="nav-icon">❓</span>
+            <span class="nav-text">Ayuda</span>
           </a>
         </li>
       </ul>
@@ -132,3 +129,6 @@
     </div>
   </div>
 </aside>
+
+<!-- Overlay para dispositivos móviles -->
+<div class="sidebar-overlay" [class.active]="isMobileOpen" (click)="closeMobileSidebar()"></div>

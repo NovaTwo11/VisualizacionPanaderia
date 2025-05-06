@@ -1,5 +1,6 @@
 import { enableProdMode, importProvidersFrom } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import {
   provideHttpClient,
   withInterceptorsFromDi,
@@ -26,6 +27,7 @@ bootstrapApplication(AppComponent, {
     // Módulos que usas en los standalone components
     importProvidersFrom(CommonModule, FormsModule, ReactiveFormsModule),
     // Aquí inyectamos nuestro interceptor
+    provideAnimations(),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: CredentialsInterceptor,

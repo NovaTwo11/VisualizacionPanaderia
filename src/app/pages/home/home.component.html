@@ -1,41 +1,81 @@
 <div class="home-container">
+  <!-- Notificaciones -->
+  <div class="notifications-container" *ngIf="notifications.length > 0">
+    <div *ngFor="let notification of notifications; let i = index"
+         class="notification {{ notification.type }}"
+         [style.animation-delay]="i * 0.2 + 's'">
+      <div class="notification-icon">
+        <span *ngIf="notification.type === 'order'">🛒</span>
+        <span *ngIf="notification.type === 'client'">👥</span>
+        <span *ngIf="notification.type === 'product'">🍞</span>
+      </div>
+      <div class="notification-content">
+        <div class="notification-title">{{ notification.title }}</div>
+        <div class="notification-message">{{ notification.message }}</div>
+        <div class="notification-time">{{ notification.time | date:'shortTime' }}</div>
+      </div>
+      <button class="notification-close" (click)="dismissNotification(i)">✕</button>
+    </div>
+  </div>
+
   <div class="welcome-section">
-    <div class="welcome-card">
-      <h2>Bienvenido a la Panadería</h2>
-      <p>Sistema de gestión para administrar todos los aspectos de su negocio.</p>
+    <div class="welcome-card animate-fade-in">
+      <h2 class="font-display">Bienvenido a la Panadería El Buen Sabor</h2>
+      <p>Sistema de gestión para administrar todos los aspectos de su negocio de forma eficiente.</p>
     </div>
   </div>
 
   <div class="dashboard-summary">
     <div class="row">
-      <div class="summary-card">
+      <!-- Productos -->
+      <div class="summary-card animate-slide-up"
+           [class.has-notification]="hasNewProducts"
+           (click)="clearNewProducts(); navigateTo('/entidades/productos')"
+           [style.animation-delay]="'0.1s'">
         <div class="summary-icon">🍞</div>
         <div class="summary-content">
           <h3>{{ summaryData.productos }}</h3>
           <p>Productos</p>
         </div>
+        <div class="notification-badge" *ngIf="newProductsCount > 0">
+          {{ newProductsCount }}
+        </div>
       </div>
 
-      <div class="summary-card">
+      <!-- Clientes -->
+      <div class="summary-card animate-slide-up"
+           [class.has-notification]="hasNewClients"
+           (click)="clearNewClients(); navigateTo('/entidades/clientes')"
+           [style.animation-delay]="'0.2s'">
         <div class="summary-icon">👥</div>
         <div class="summary-content">
           <h3>{{ summaryData.clientes }}</h3>
           <p>Clientes</p>
         </div>
+        <div class="notification-badge" *ngIf="newClientsCount > 0">
+          {{ newClientsCount }}
+        </div>
       </div>
 
-      <div class="summary-card">
+      <!-- Pedidos Hoy -->
+      <div class="summary-card animate-slide-up"
+           [class.has-notification]="hasNewOrders"
+           (click)="clearNewOrders(); navigateTo('/transacciones/pedidos')"
+           [style.animation-delay]="'0.3s'">
         <div class="summary-icon">🛒</div>
         <div class="summary-content">
           <h3>{{ summaryData.pedidosHoy }}</h3>
           <p>Pedidos Hoy</p>
         </div>
+        <div class="notification-badge" *ngIf="newOrdersCount > 0">
+          {{ newOrdersCount }}
+        </div>
       </div>
 
-      <div class="summary-card">
+      <div class="summary-card animate-slide-up" [style.animation-delay]="'0.4s'">
         <div class="summary-icon">💰</div>
         <div class="summary-content">
-          <h3>${{ summaryData.ventasMensuales }}</h3>
+          <h3>${{ summaryData.ventasMensuales | number:'1.2-2' }}</h3>
           <p>Ventas Mensuales</p>
         </div>
       </div>
@@ -45,7 +85,10 @@
   <div class="quick-access-section">
     <h2>Accesos Rápidos</h2>
     <div class="row">
-      <div class="quick-access-card" *ngFor="let item of quickAccess" (click)="navigateTo(item.route)">
+      <div class="quick-access-card" *ngFor="let item of quickAccess; let i = index"
+           (click)="navigateTo(item.route)"
+           [style.animation-delay]="i * 0.1 + 0.5 + 's'"
+           class="animate-slide-up">
         <div class="quick-access-icon">{{ item.icon }}</div>
         <h3>{{ item.title }}</h3>
         <p>{{ item.description }}</p>
@@ -56,35 +99,15 @@
   <div class="recent-activity">
     <h2>Actividad Reciente</h2>
     <div class="activity-timeline">
-      <div class="activity-item">
-        <div class="activity-time">10:30 AM</div>
+      <div class="activity-item" *ngFor="let activity of recentActivities; let i = index"
+           [class.new-item]="activity.isNew"
+           [style.animation-delay]="i * 0.1 + 's'">
+        <div class="activity-time">{{ activity.time | date:'shortTime' }}</div>
         <div class="activity-content">
-          <div class="activity-icon">🛒</div>
+          <div class="activity-icon" [ngClass]="activity.type">{{ activity.icon }}</div>
           <div class="activity-text">
-            <h4>Nuevo Pedido</h4>
-            <p>Cliente: Ana Martínez - Total: $45.75</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="activity-item">
-        <div class="activity-time">09:15 AM</div>
-        <div class="activity-content">
-          <div class="activity-icon">🍞</div>
-          <div class="activity-text">
-            <h4>Stock Actualizado</h4>
-            <p>Producto: Pan Francés - Nuevo stock: 45 unidades</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="activity-item">
-        <div class="activity-time">Ayer</div>
-        <div class="activity-content">
-          <div class="activity-icon">👥</div>
-          <div class="activity-text">
-            <h4>Nuevo Cliente</h4>
-            <p>Se registró: Carlos Rodríguez</p>
+            <h4>{{ activity.title }}</h4>
+            <p>{{ activity.description }}</p>
           </div>
         </div>
       </div>

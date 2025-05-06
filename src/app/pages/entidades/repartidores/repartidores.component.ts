@@ -5,13 +5,14 @@ import { Repartidor } from '../../../models/models';
 import { RepartidorService } from '../../../services/repartidor.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import {SearchBarComponent} from '../../../shared/search-bar/search-bar.component';
 
 @Component({
   selector: 'app-repartidores',
   templateUrl: './repartidores.component.html',
   styleUrls: ['./repartidores.component.css'],
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, SearchBarComponent],
   animations: [
     trigger('formAnimation', [
       transition(':enter', [

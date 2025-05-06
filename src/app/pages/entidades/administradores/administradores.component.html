@@ -2,9 +2,8 @@
   <div class="page-header">
     <div class="page-title">
       <h2>Gestión de Administradores</h2>
-      <p>Administre los usuarios con acceso al sistema</p>
+      <p>Administre los usuarios del sistema y sus permisos</p>
     </div>
-
     <div class="page-actions">
       <button class="btn btn-primary" (click)="toggleFormMode('crear')">
         <span>➕</span> Nuevo Administrador
@@ -17,29 +16,29 @@
     <div class="card">
       <div class="card-header">
         <h3>{{ formMode === 'crear' ? 'Crear Nuevo Administrador' : 'Editar Administrador' }}</h3>
-        <button class="btn-close" (click)="toggleFormMode('oculto')">✕</button>
+        <button class="btn-close" (click)="toggleFormMode('oculto')" aria-label="Cerrar formulario">✕</button>
       </div>
-
       <div class="card-body">
         <form [formGroup]="adminForm" (ngSubmit)="guardarAdministrador()">
           <div class="row">
             <div class="col">
               <div class="form-group">
-                <label class="form-label" for="nombre">Nombre</label>
-                <input type="text" id="nombre" formControlName="nombre" class="form-control"
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" id="nombre" formControlName="nombre"
+                       class="form-control"
                        [class.is-invalid]="submitted && f['nombre'].errors">
                 <div class="invalid-feedback" *ngIf="submitted && f['nombre'].errors">
                   El nombre es requerido
                 </div>
               </div>
             </div>
-
             <div class="col">
               <div class="form-group">
-                <label class="form-label" for="apellido">Apellido</label>
-                <input type="text" id="apellido" formControlName="apellido" class="form-control"
+                <label for="apellido" class="form-label">Apellido</label>
+                <input type="text" id="apellido" formControlName="apellido"
+                       class="form-control"
                        [class.is-invalid]="submitted && f['apellido'].errors">
-                <div class="invalid-feedback" *ngIf="submitted && f['apellido']?.errors">
+                <div class="invalid-feedback" *ngIf="submitted && f['apellido'].errors">
                   El apellido es requerido
                 </div>
               </div>
@@ -49,41 +48,62 @@
           <div class="row">
             <div class="col">
               <div class="form-group">
-                <label class="form-label" for="email">Email</label>
-                <input type="email" id="email" formControlName="email" class="form-control"
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" formControlName="email"
+                       class="form-control"
                        [class.is-invalid]="submitted && f['email'].errors">
                 <div class="invalid-feedback" *ngIf="submitted && f['email'].errors">
-                  <span *ngIf="f['email']?.errors?.['required']">El email es requerido</span>
-                  <span *ngIf="f['email']?.errors?.['email']">Ingrese un email válido</span>
+                  <span *ngIf="f['email'].errors?.['required']">El email es requerido</span>
+                  <span *ngIf="f['email'].errors?.['email']">Ingrese un email válido</span>
                 </div>
               </div>
             </div>
-
             <div class="col">
               <div class="form-group">
-                <label class="form-label" for="password">Contraseña</label>
-                <input type="text" id="password" formControlName="password" class="form-control"
-                       [class.is-invalid]="submitted && f['password'].errors">
-                <div class="invalid-feedback" *ngIf="submitted && f['password']?.errors">
-                  La contraseña es requerida
-                </div>
-              </div>
-            </div>
-
-            <div class="col">
-              <div class="form-group">
-                <label class="form-label" for="telefono">Teléfono</label>
-                <input type="text" id="telefono" formControlName="telefono" class="form-control"
+                <label for="telefono" class="form-label">Teléfono</label>
+                <input type="text" id="telefono" formControlName="telefono"
+                       class="form-control"
                        [class.is-invalid]="submitted && f['telefono'].errors">
-                <div class="invalid-feedback" *ngIf="submitted && f['telefono']?.errors">
+                <div class="invalid-feedback" *ngIf="submitted && f['telefono'].errors">
                   El teléfono es requerido
                 </div>
               </div>
             </div>
           </div>
 
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="username" class="form-label">Nombre de Usuario</label>
+                <input type="text" id="username" formControlName="username"
+                       class="form-control"
+                       [attr.disabled]="formMode === 'editar' ? true : null"
+                       [class.is-invalid]="submitted && f['username'].errors">
+                <div class="invalid-feedback" *ngIf="submitted && f['username'].errors">
+                  El nombre de usuario es requerido
+                </div>
+                <small class="text-muted" *ngIf="formMode === 'editar'">El nombre de usuario no puede ser modificado</small>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group" *ngIf="formMode === 'crear'">
+                <label for="password" class="form-label">Contraseña</label>
+                <input type="password" id="password" formControlName="password"
+                       class="form-control"
+                       [class.is-invalid]="submitted && f['password'].errors">
+                <div class="invalid-feedback" *ngIf="submitted && f['password'].errors">
+                  <span *ngIf="f['password'].errors?.['required']">La contraseña es requerida</span>
+                  <span *ngIf="f['password'].errors?.['minlength']">La contraseña debe tener al menos 6 caracteres</span>
+                </div>
+              </div>
+              <div class="form-group" *ngIf="formMode === 'editar'">
+                <p class="mt-4 text-muted">Las credenciales no pueden modificarse desde esta sección.</p>
+              </div>
+            </div>
+          </div>
+
           <div class="form-group">
-            <label class="form-label" for="rol">Rol</label>
+            <label for="rol" class="form-label">Rol</label>
             <select id="rol" formControlName="rol" class="form-control"
                     [class.is-invalid]="submitted && f['rol'].errors">
               <option value="">Seleccione un rol</option>
@@ -91,7 +111,7 @@
               <option value="Supervisor">Supervisor</option>
               <option value="Operador">Operador</option>
             </select>
-            <div class="invalid-feedback" *ngIf="submitted && f['rol']?.errors">
+            <div class="invalid-feedback" *ngIf="submitted && f['rol'].errors">
               El rol es requerido
             </div>
           </div>
@@ -99,12 +119,14 @@
           <div class="form-group">
             <div class="form-check">
               <input type="checkbox" id="activo" formControlName="activo" class="form-check-input">
-              <label class="form-check-label" for="activo">Usuario activo</label>
+              <label for="activo" class="form-check-label">Usuario activo</label>
             </div>
           </div>
 
           <div class="form-actions">
-            <button type="button" class="btn btn-outline" (click)="toggleFormMode('oculto')">Cancelar</button>
+            <button type="button" class="btn btn-outline" (click)="toggleFormMode('oculto')">
+              Cancelar
+            </button>
             <button type="submit" class="btn btn-primary">Guardar</button>
           </div>
         </form>
@@ -116,65 +138,72 @@
   <div class="administradores-list">
     <div class="card">
       <div class="card-header">
-        <div class="card-title">
-          <h3>Listado de Administradores</h3>
-        </div>
-
+        <h3>Listado de Administradores</h3>
         <div class="card-filters">
-          <div class="search-box">
-            <input type="text" placeholder="Buscar administrador..." class="search-input" [(ngModel)]="searchTerm" (input)="onSearchChange()">
-            <button class="search-button">🔍</button>
-          </div>
+          <app-search-bar
+            placeholder="Buscar administrador..."
+            [(searchValue)]="searchTerm"
+            (search)="onSearchChange()"
+          ></app-search-bar>
         </div>
       </div>
-
       <div class="card-body">
         <div *ngIf="loading" class="loading-container">
           <div class="loader"></div>
           <p>Cargando administradores...</p>
         </div>
-
         <div *ngIf="error" class="error-container">
           <p>{{ error }}</p>
           <button class="btn btn-primary" (click)="getAdministradores()">Reintentar</button>
         </div>
-
         <div *ngIf="!loading && !error" class="table-container">
           <table class="table">
             <thead>
             <tr>
-              <th>ID</th>
+              <th>Usuario</th>
               <th>Nombre</th>
               <th>Email</th>
               <th>Teléfono</th>
               <th>Rol</th>
-              <th>Fecha Creación</th>
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let admin of filteredAdministradores">
-              <td>{{ admin.id }}</td>
+            <tr *ngFor="let admin of filteredAdministradores; let i = index" [style.animation-delay]="i * 0.05 + 's'" class="animate-fade-in">
+              <td>
+                <div class="user-info">
+                  <div class="user-avatar" [ngClass]="admin.rol.toLowerCase()">
+                    {{ admin.nombre.charAt(0) }}{{ admin.apellido.charAt(0) }}
+                  </div>
+                  <span class="user-name">{{ admin.nombre }}</span>
+                </div>
+              </td>
               <td>{{ admin.nombre }} {{ admin.apellido }}</td>
               <td>{{ admin.email }}</td>
               <td>{{ admin.telefono }}</td>
-              <td>{{ admin.rol }}</td>
-              <td>{{ admin.fechaCreacion | date:'dd/MM/yyyy' }}</td>
               <td>
-                  <span class="badge" [ngClass]="admin.activo ? 'badge-success' : 'badge-danger'">
-                    {{ admin.activo ? 'Activo' : 'Inactivo' }}
-                  </span>
+                <span class="badge" [ngClass]="'badge-' + admin.rol.toLowerCase()">
+                  {{ admin.rol }}
+                </span>
+              </td>
+              <td>
+                <span class="badge"
+                      [ngClass]="admin.activo ? 'badge-success' : 'badge-danger'">
+                  {{ admin.activo ? 'Activo' : 'Inactivo' }}
+                </span>
               </td>
               <td>
                 <div class="table-actions">
-                  <button class="btn-icon" title="Editar" (click)="editarAdministrador(admin)">✏️</button>
-                  <button class="btn-icon" title="Eliminar" (click)="confirmarEliminar(admin)">🗑️</button>
+                  <button class="btn-icon" title="Editar"
+                          (click)="editarAdministrador(admin)" aria-label="Editar administrador">✏️</button>
+                  <button class="btn-icon" title="Eliminar"
+                          (click)="confirmarEliminar(admin)" aria-label="Eliminar administrador">🗑️</button>
                 </div>
               </td>
             </tr>
             <tr *ngIf="filteredAdministradores.length === 0">
-              <td colspan="8" class="text-center">No se encontraron administradores</td>
+              <td colspan="7" class="text-center">No se encontraron administradores</td>
             </tr>
             </tbody>
           </table>
@@ -189,10 +218,14 @@
     <div class="modal-content">
       <div class="modal-header">
         <h3>Confirmar Eliminación</h3>
-        <button class="btn-close" (click)="showDeleteModal = false">✕</button>
+        <button class="btn-close" (click)="showDeleteModal = false" aria-label="Cerrar modal">✕</button>
       </div>
       <div class="modal-body">
-        <p>¿Está seguro que desea eliminar al administrador <strong>{{ adminSeleccionado?.nombre }} {{ adminSeleccionado?.apellido }}</strong>?</p>
+        <p>
+          ¿Está seguro que desea eliminar al administrador
+          <strong>{{ adminSeleccionado?.nombre }}
+            {{ adminSeleccionado?.apellido }}</strong>?
+        </p>
         <p>Esta acción no se puede deshacer.</p>
       </div>
       <div class="modal-footer">

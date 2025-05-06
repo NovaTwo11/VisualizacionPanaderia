@@ -4,13 +4,14 @@ import { AuthService } from "../../services/auth.service"
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
+import {ThemeToggleComponent} from '../theme-toggle/theme-toggle.component';
 
 @Component({
   selector: "app-header",
   templateUrl: "./header.component.html",
   styleUrls: ["./header.component.css"],
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, SearchBarComponent],
+  imports: [CommonModule, RouterModule, FormsModule, SearchBarComponent, ThemeToggleComponent],
 })
 export class HeaderComponent implements OnInit {
   searchQuery = ""

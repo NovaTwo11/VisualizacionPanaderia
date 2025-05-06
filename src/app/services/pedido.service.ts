@@ -1,5 +1,5 @@
 // src/app/services/pedido.service.ts
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment';
 export class PedidoService {
   private apiUrl = `${environment.apiUrl}/pedidos`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private zone: NgZone) { }
 
   getPedidos(): Observable<Pedido[]> {
     return this.http.get<Pedido[]>(this.apiUrl)
@@ -60,5 +60,31 @@ export class PedidoService {
       console.error(`${operation} failed: ${error.message}`);
       return of(result as T);
     };
+  }
+
+  /** Retorna la cantidad de pedidos realizados HOY */
+  countToday(): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/count/today`);
+  }
+
+  /** Retorna la suma de ventas del mes actual */
+  sumMonthlySales(): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/sum/monthly`);
+  }
+
+  /** Abre una conexión SSE al backend y emite cada nuevo pedido */
+  onNewOrder(): Observable<Pedido> {
+    return new Observable<Pedido>(subscriber => {
+      const evtSource = new EventSource(`${this.apiUrl}/stream`);
+      evtSource.onmessage = event => {
+        const ped: Pedido = JSON.parse(event.data);
+        this.zone.run(() => subscriber.next(ped));
+      };
+      evtSource.onerror = err => {
+        this.zone.run(() => subscriber.error(err));
+        evtSource.close();
+      };
+      return () => evtSource.close();
+    });
   }
 }

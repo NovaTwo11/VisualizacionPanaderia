@@ -6,7 +6,7 @@
     </p>
   </div>
 
-  <div class="actions-container">
+  <div class="actions-container animate-fade-in">
     <!-- Período -->
     <div class="filter-container">
       <label for="filtroTiempo">Período:</label>
@@ -39,82 +39,93 @@
       </select>
     </div>
 
-    <button class="btn btn-primary" (click)="exportarReporte()">Exportar</button>
+    <button class="btn btn-primary" (click)="exportarReporte()">
+      <span>📊</span> Exportar Reporte
+    </button>
   </div>
 
-  <div *ngIf="!loading">
-    <div class="table-responsive">
-      <table id="tablaVentas" class="table">
-        <thead>
-        <tr>
-          <!-- Columnas para Tipo = General -->
+  <div class="card animate-slide-up" *ngIf="!loading">
+    <div class="card-header">
+      <h3>Resultados del Reporte</h3>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table id="tablaVentas" class="table">
+          <thead>
+          <tr>
+            <!-- Columnas para Tipo = General -->
+            <ng-container *ngIf="filtroTipoReporte==='GENERAL'">
+              <th>Método de Pago</th>
+              <th>Total Generado</th>
+              <th># Pedidos</th>
+              <th>Ticket Promedio</th>
+            </ng-container>
+
+            <!-- Columnas para Tipo = Por Producto -->
+            <ng-container *ngIf="filtroTipoReporte==='POR_PRODUCTO'">
+              <th>Producto</th>
+              <th>Stock Actual</th>
+              <th>Precio Unitario</th>
+              <th>Cantidad Vendida</th>
+            </ng-container>
+
+            <!-- Columnas para Tipo = Por Cliente -->
+            <ng-container *ngIf="filtroTipoReporte==='POR_CLIENTE'">
+              <th>Cliente</th>
+              <th>Total Unidades Compradas</th>
+              <th>Detalle de Productos</th>
+            </ng-container>
+          </tr>
+          </thead>
+          <tbody>
+          <!-- Filas para Tipo = General -->
           <ng-container *ngIf="filtroTipoReporte==='GENERAL'">
-            <th>Método de Pago</th>
-            <th>Total Generado</th>
-            <th># Pedidos</th>
-            <th>Ticket Promedio</th>
+            <tr *ngFor="let d of detalles; let i = index" [style.animation-delay]="i * 0.05 + 's'" class="animate-fade-in">
+              <td>{{ d.metodoPago }}</td>
+              <td>{{ d.totalGenerado | currency }}</td>
+              <td>{{ d.numeroPedidos }}</td>
+              <td>{{ d.ticketPromedio | currency }}</td>
+            </tr>
           </ng-container>
 
-          <!-- Columnas para Tipo = Por Producto -->
+          <!-- Filas para Tipo = Por Producto -->
           <ng-container *ngIf="filtroTipoReporte==='POR_PRODUCTO'">
-            <th>Producto</th>
-            <th>Stock Actual</th>
-            <th>Precio Unitario</th>
-            <th>Cantidad Vendida</th>
+            <tr *ngFor="let d of detalles; let i = index" [style.animation-delay]="i * 0.05 + 's'" class="animate-fade-in">
+              <td>{{ d.nombreProducto }}</td>
+              <td>{{ d.stock }}</td>
+              <td>{{ d.precioUnitario | currency }}</td>
+              <td>{{ d.cantidadVendida }}</td>
+            </tr>
           </ng-container>
 
-          <!-- Columnas para Tipo = Por Cliente -->
+          <!-- Filas para Tipo = Por Cliente -->
           <ng-container *ngIf="filtroTipoReporte==='POR_CLIENTE'">
-            <th>Cliente</th>
-            <th>Total Unidades Compradas</th>
-            <th>Detalle de Productos</th>
+            <tr *ngFor="let d of detalles; let i = index" [style.animation-delay]="i * 0.05 + 's'" class="animate-fade-in">
+              <td>{{ d.nombreCliente }}</td>
+              <td>{{ d.totalUnidades }}</td>
+              <td>
+                <ul class="product-detail-list">
+                  <li *ngFor="let p of d.detalleProductos">
+                    {{ p.nombre }} ({{ p.cantidad }})
+                  </li>
+                </ul>
+              </td>
+            </tr>
           </ng-container>
-        </tr>
-        </thead>
-        <tbody>
-        <!-- Filas para Tipo = General -->
-        <ng-container *ngIf="filtroTipoReporte==='GENERAL'">
-          <tr *ngFor="let d of detalles">
-            <td>{{ d.metodoPago }}</td>
-            <td>{{ d.totalGenerado | currency }}</td>
-            <td>{{ d.numeroPedidos }}</td>
-            <td>{{ d.ticketPromedio | currency }}</td>
-          </tr>
-        </ng-container>
+          </tbody>
+        </table>
+      </div>
 
-        <!-- Filas para Tipo = Por Producto -->
-        <ng-container *ngIf="filtroTipoReporte==='POR_PRODUCTO'">
-          <tr *ngFor="let d of detalles">
-            <td>{{ d.nombreProducto }}</td>
-            <td>{{ d.stock }}</td>
-            <td>{{ d.precioUnitario | currency }}</td>
-            <td>{{ d.cantidadVendida }}</td>
-          </tr>
-        </ng-container>
-
-        <!-- Filas para Tipo = Por Cliente -->
-        <ng-container *ngIf="filtroTipoReporte==='POR_CLIENTE'">
-          <tr *ngFor="let d of detalles">
-            <td>{{ d.nombreCliente }}</td>
-            <td>{{ d.totalUnidades }}</td>
-            <td>
-              <ul class="product-detail-list">
-                <li *ngFor="let p of d.detalleProductos">
-                  {{ p.nombre }} ({{ p.cantidad }})
-                </li>
-              </ul>
-            </td>
-          </tr>
-        </ng-container>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="chart-container" style="height: 400px;">
-      <canvas #ventasCanvas></canvas>
+      <div class="chart-container">
+        <canvas #ventasCanvas></canvas>
+      </div>
     </div>
   </div>
 
-  <div class="loading" *ngIf="loading">Cargando datos del reporte...</div>
-  <div class="error"   *ngIf="error">{{ error }}</div>
+  <div class="loading" *ngIf="loading">
+    <div class="loader"></div>
+    <p>Cargando datos del reporte...</p>
+  </div>
+
+  <div class="error" *ngIf="error">{{ error }}</div>
 </div>

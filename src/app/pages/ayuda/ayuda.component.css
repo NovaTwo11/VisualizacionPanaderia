@@ -14,6 +14,8 @@
 .page-title h2 {
   margin: 0;
   margin-bottom: var(--spacing-xs);
+  font-family: var(--font-display);
+  color: var(--color-primary-dark);
 }
 
 .page-title p {
@@ -32,6 +34,22 @@
   gap: var(--spacing-md);
   border-bottom: 1px solid rgba(119, 73, 54, 0.1);
   padding-bottom: var(--spacing-sm);
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary-light) transparent;
+}
+
+.tabs-header::-webkit-scrollbar {
+  height: 5px;
+}
+
+.tabs-header::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tabs-header::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary-light);
+  border-radius: 20px;
 }
 
 .tab {
@@ -41,20 +59,30 @@
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--border-radius-md);
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  border: 1px solid transparent;
 }
 
 .tab:hover {
   background-color: rgba(249, 200, 70, 0.1);
+  transform: translateY(-2px);
 }
 
 .tab.active {
   background-color: rgba(249, 200, 70, 0.2);
   font-weight: 500;
+  border-color: rgba(119, 73, 54, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .tab-icon {
-  font-size: 20px;
+  font-size: 24px;
+  transition: transform var(--transition-normal);
+}
+
+.tab:hover .tab-icon {
+  transform: scale(1.1);
 }
 
 .tab-text {
@@ -83,32 +111,71 @@
 
 .manual-section {
   margin-bottom: var(--spacing-md);
+  background-color: white;
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(119, 73, 54, 0.1);
+  transition: all var(--transition-fast);
+}
+
+.manual-section:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 
 .manual-section h4 {
   margin-top: 0;
   margin-bottom: var(--spacing-sm);
   color: var(--color-primary);
+  font-family: var(--font-display);
+  position: relative;
+  padding-bottom: var(--spacing-xs);
+}
+
+.manual-section h4::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 2px;
+  background-color: var(--color-primary-light);
 }
 
 .manual-section p {
   margin-top: 0;
   margin-bottom: var(--spacing-sm);
+  line-height: 1.6;
 }
 
-.manual-section ul, .manual-section ol {
+.manual-section ul,
+.manual-section ol {
   padding-left: var(--spacing-lg);
   margin: var(--spacing-sm) 0;
 }
 
 .manual-section li {
   margin-bottom: var(--spacing-xs);
+  line-height: 1.6;
+}
+
+.manual-section li::marker {
+  color: var(--color-primary);
 }
 
 .manual-actions {
   display: flex;
   justify-content: center;
   margin-top: var(--spacing-lg);
+}
+
+.manual-actions button {
+  transition: all var(--transition-fast);
+}
+
+.manual-actions button:hover {
+  transform: translateY(-2px);
 }
 
 /* Preguntas Frecuentes */
@@ -126,11 +193,17 @@
   border: 1px solid rgba(119, 73, 54, 0.1);
   border-radius: var(--border-radius-md);
   overflow: hidden;
-  transition: box-shadow var(--transition-fast);
+  transition: all var(--transition-fast);
+  background-color: white;
+}
+
+.accordion-item:hover {
+  box-shadow: var(--shadow-md);
 }
 
 .accordion-item.active {
   box-shadow: var(--shadow-md);
+  border-color: var(--color-primary-light);
 }
 
 .accordion-header {
@@ -140,7 +213,7 @@
   padding: var(--spacing-md);
   background-color: rgba(249, 200, 70, 0.1);
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
 .accordion-header:hover {
@@ -150,17 +223,32 @@
 .accordion-header h4 {
   margin: 0;
   font-size: 16px;
+  color: var(--color-primary-dark);
+  font-weight: 600;
 }
 
 .accordion-icon {
   font-size: 14px;
   transition: transform var(--transition-fast);
+  color: var(--color-primary);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(249, 200, 70, 0.2);
+  border-radius: 50%;
+}
+
+.accordion-icon.rotated {
+  transform: rotate(180deg);
 }
 
 .accordion-content {
   max-height: 0;
   overflow: hidden;
-  transition: max-height var(--transition-normal);
+  transition: max-height var(--transition-normal), padding var(--transition-normal);
+  padding: 0 var(--spacing-lg);
 }
 
 .accordion-content.expanded {
@@ -171,15 +259,22 @@
 .accordion-content p {
   margin-top: 0;
   margin-bottom: var(--spacing-md);
+  line-height: 1.6;
 }
 
-.accordion-content ol, .accordion-content ul {
+.accordion-content ol,
+.accordion-content ul {
   padding-left: var(--spacing-lg);
   margin: var(--spacing-sm) 0;
 }
 
 .accordion-content li {
   margin-bottom: var(--spacing-sm);
+  line-height: 1.6;
+}
+
+.accordion-content li::marker {
+  color: var(--color-primary);
 }
 
 /* Contactar Soporte */
@@ -206,13 +301,16 @@
   gap: var(--spacing-md);
   padding: var(--spacing-md);
   border-radius: var(--border-radius-md);
-  background-color: rgba(249, 200, 70, 0.05);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  background-color: white;
+  transition: all var(--transition-fast);
+  border: 1px solid rgba(119, 73, 54, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .contacto-metodo:hover {
-  transform: translateY(-3px);
+  transform: translateY(-5px);
   box-shadow: var(--shadow-md);
+  border-color: var(--color-primary-light);
 }
 
 .contacto-icon {
@@ -224,6 +322,13 @@
   height: 50px;
   background-color: rgba(249, 200, 70, 0.2);
   border-radius: 50%;
+  color: var(--color-primary);
+  transition: transform var(--transition-normal);
+  flex-shrink: 0;
+}
+
+.contacto-metodo:hover .contacto-icon {
+  transform: scale(1.1) rotate(10deg);
 }
 
 .contacto-details {
@@ -233,6 +338,8 @@
 .contacto-details h4 {
   margin: 0;
   margin-bottom: var(--spacing-xs);
+  color: var(--color-primary-dark);
+  font-family: var(--font-display);
 }
 
 .contacto-details p {
@@ -246,18 +353,77 @@
   border-radius: var(--border-radius-md);
   padding: var(--spacing-md);
   box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(119, 73, 54, 0.1);
+  transition: all var(--transition-fast);
+}
+
+.contacto-form:hover {
+  box-shadow: var(--shadow-md);
 }
 
 .contacto-form h4 {
   margin-top: 0;
   margin-bottom: var(--spacing-md);
   text-align: center;
+  color: var(--color-primary-dark);
+  font-family: var(--font-display);
+  position: relative;
+  padding-bottom: var(--spacing-sm);
+}
+
+.contacto-form h4::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 2px;
+  background-color: var(--color-primary-light);
 }
 
 .form-actions {
   display: flex;
   justify-content: flex-end;
   margin-top: var(--spacing-md);
+  gap: var(--spacing-md);
+}
+
+.form-actions button {
+  transition: all var(--transition-fast);
+}
+
+.form-actions button:hover {
+  transform: translateY(-2px);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.animate-slide-up {
+  animation: slideIn 0.5s ease forwards;
 }
 
 @media (max-width: 768px) {
