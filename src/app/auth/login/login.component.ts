@@ -41,17 +41,29 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return;
     }
+
     this.isLoading = true;
     this.errorMessage = '';
     const { email, password } = this.loginForm.value;
+
     setTimeout(() => {
       this.authService.iniciarSesion(email, password)
         .subscribe({
           next: () => {
-            this.isLoading = false;
-            this.router.navigate(['/home']);
+            // 1) Navega al Home...
+            this.router.navigate(['/home'])
+              .then(navigated => {
+                if (navigated) {
+                  // 2) Cuando ya estés en /home, recarga la página
+                  window.location.reload();
+                } else {
+                  // Si falló la navegación, igualmente quita el loader
+                  this.isLoading = false;
+                }
+              });
           },
           error: (error) => {
+            // En caso de error, quita el loader y muestra mensaje
             this.isLoading = false;
             if (error.status === 401) {
               this.errorMessage = 'Credenciales incorrectas. Por favor, inténtalo de nuevo.';
