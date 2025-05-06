@@ -1,1 +1,477 @@
-/* You can add global styles to this file, and also import other style files */
+/* Estilos globales */
+
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--color-text);
+  background-color: var(--color-background);
+}
+
+body {
+  overflow-y: auto;
+}
+
+/* Variables de tema por defecto */
+:root {
+  --color-primary: #e76f51;
+  --color-primary-light: #f4a261;
+  --color-primary-dark: #c45a41;
+  --color-secondary: #f9c846;
+  --color-success: #2a9d8f;
+  --color-danger: #e63946;
+  --color-warning: #f4a261;
+  --color-info: #457b9d;
+
+  --color-text: #333333;
+  --color-text-light: #666666;
+  --color-text-lighter: #999999;
+  --color-background: #f8f9fa;
+  --color-sidebar: #ffffff;
+  --color-sidebar-foreground: #333333;
+  --color-sidebar-border: rgba(119, 73, 54, 0.1);
+  --color-sidebar-accent: rgba(249, 200, 70, 0.1);
+  --color-sidebar-accent-foreground: #333333;
+
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  /* 3. Tus variables de panadería */
+  --color-cream: #f8f3e6;
+  --color-toast: #e6c9a8;
+  --color-toast-dark: #d4a76a;
+  --color-cinnamon: #a67c52;
+  --color-chocolate: #6b4226;
+  --color-error: #e74c3c;
+  --shadow-soft: 0 10px 30px rgba(107, 66, 38, 0.15);
+  --border-radius: 30px;
+  --transition-speed: 0.3s;
+  --font-primary: 'Quicksand', sans-serif;
+  --font-display: 'Playfair Display', serif;
+}
+
+/* Tema oscuro */
+.dark-theme {
+  --color-primary: #e76f51;
+  --color-primary-light: #f4a261;
+  --color-primary-dark: #c45a41;
+  --color-secondary: #f9c846;
+  --color-success: #2a9d8f;
+  --color-danger: #e63946;
+  --color-warning: #f4a261;
+  --color-info: #457b9d;
+
+  --color-text: #e2e8f0;
+  --color-text-light: #a0aec0;
+  --color-text-lighter: #718096;
+  --color-background: #1a202c;
+  --color-sidebar: #2d3748;
+  --color-sidebar-foreground: #e2e8f0;
+  --color-sidebar-border: rgba(255, 255, 255, 0.1);
+  --color-sidebar-accent: rgba(249, 200, 70, 0.2);
+  --color-sidebar-accent-foreground: #e2e8f0;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Tema claro */
+.light-theme {
+  --color-primary: #e76f51;
+  --color-primary-light: #f4a261;
+  --color-primary-dark: #c45a41;
+  --color-secondary: #f9c846;
+  --color-success: #2a9d8f;
+  --color-danger: #e63946;
+  --color-warning: #f4a261;
+  --color-info: #457b9d;
+
+  --color-text: #333333;
+  --color-text-light: #666666;
+  --color-text-lighter: #999999;
+  --color-background: #ffffff;
+  --color-sidebar: #f8f9fa;
+  --color-sidebar-foreground: #333333;
+  --color-sidebar-border: rgba(119, 73, 54, 0.1);
+  --color-sidebar-accent: rgba(249, 200, 70, 0.1);
+  --color-sidebar-accent-foreground: #333333;
+}
+
+/* Tema colorido */
+.colorful-theme {
+  --color-primary: #6b46c1;
+  --color-primary-light: #9f7aea;
+  --color-primary-dark: #553c9a;
+  --color-secondary: #3182ce;
+  --color-success: #38a169;
+  --color-danger: #e53e3e;
+  --color-warning: #dd6b20;
+  --color-info: #3182ce;
+
+  --color-text: #2d3748;
+  --color-text-light: #4a5568;
+  --color-text-lighter: #718096;
+  --color-background: #f7fafc;
+  --color-sidebar: #edf2f7;
+  --color-sidebar-foreground: #2d3748;
+  --color-sidebar-border: rgba(74, 85, 104, 0.1);
+  --color-sidebar-accent: rgba(107, 70, 193, 0.1);
+  --color-sidebar-accent-foreground: #2d3748;
+}
+
+/* Asegurarse de que el contenido principal tenga scroll */
+.content {
+  overflow-y: auto;
+  height: calc(100vh - 60px); /* Altura total menos la altura del header */
+}
+
+/* Estilos para los botones */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+}
+
+.btn-primary:disabled {
+  background-color: var(--color-primary-light);
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary);
+  color: var(--color-text);
+}
+
+.btn-secondary:hover {
+  background-color: #e9b83b; /* Un tono más oscuro del secundario */
+}
+
+.btn-secondary:active {
+  transform: translateY(1px);
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+}
+
+.btn-outline:hover {
+  background-color: rgba(231, 111, 81, 0.1);
+}
+
+.btn-outline:active {
+  transform: translateY(1px);
+}
+
+.btn-sm {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 14px;
+}
+
+.btn-lg {
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: 18px;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* Estilos para formularios */
+.form-group {
+  margin-bottom: var(--spacing-md);
+}
+
+.form-label {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  font-weight: 500;
+}
+
+.form-control {
+  width: 100%;
+  padding: var(--spacing-sm);
+  border: 1px solid rgba(119, 73, 54, 0.2);
+  border-radius: var(--border-radius-sm);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-control:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(231, 111, 81, 0.2);
+  outline: none;
+}
+
+.form-control.is-invalid {
+  border-color: var(--color-danger);
+}
+
+.invalid-feedback {
+  display: block;
+  margin-top: var(--spacing-xs);
+  color: var(--color-danger);
+  font-size: 14px;
+}
+
+.form-check {
+  display: flex;
+  align-items: center;
+}
+
+.form-check-input {
+  margin-right: var(--spacing-sm);
+}
+
+/* Estilos para tarjetas */
+.card {
+  background-color: white;
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid rgba(119, 73, 54, 0.1);
+}
+
+.card-body {
+  padding: var(--spacing-md);
+}
+
+.card-footer {
+  padding: var(--spacing-md);
+  border-top: 1px solid rgba(119, 73, 54, 0.1);
+}
+
+/* Estilos para tablas */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: var(--spacing-sm);
+  text-align: left;
+  border-bottom: 1px solid rgba(119, 73, 54, 0.1);
+}
+
+.table th {
+  font-weight: 500;
+  background-color: rgba(249, 200, 70, 0.1);
+}
+
+/* Estilos para alertas */
+.alert {
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.alert-success {
+  background-color: rgba(42, 157, 143, 0.1);
+  color: var(--color-success);
+}
+
+.alert-danger {
+  background-color: rgba(230, 57, 70, 0.1);
+  color: var(--color-danger);
+}
+
+.alert-warning {
+  background-color: rgba(244, 162, 97, 0.1);
+  color: var(--color-warning);
+}
+
+.alert-info {
+  background-color: rgba(69, 123, 157, 0.1);
+  color: var(--color-info);
+}
+
+/* Utilidades */
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.gap-1 {
+  gap: var(--spacing-xs);
+}
+
+.gap-2 {
+  gap: var(--spacing-sm);
+}
+
+.gap-3 {
+  gap: var(--spacing-md);
+}
+
+.gap-4 {
+  gap: var(--spacing-lg);
+}
+
+.mt-1 {
+  margin-top: var(--spacing-xs);
+}
+
+.mt-2 {
+  margin-top: var(--spacing-sm);
+}
+
+.mt-3 {
+  margin-top: var(--spacing-md);
+}
+
+.mt-4 {
+  margin-top: var(--spacing-lg);
+}
+
+.mb-1 {
+  margin-bottom: var(--spacing-xs);
+}
+
+.mb-2 {
+  margin-bottom: var(--spacing-sm);
+}
+
+.mb-3 {
+  margin-bottom: var(--spacing-md);
+}
+
+.mb-4 {
+  margin-bottom: var(--spacing-lg);
+}
+
+.p-1 {
+  padding: var(--spacing-xs);
+}
+
+.p-2 {
+  padding: var(--spacing-sm);
+}
+
+.p-3 {
+  padding: var(--spacing-md);
+}
+
+.p-4 {
+  padding: var(--spacing-lg);
+}
+
+/* Asegurarse de que los iconos de FontAwesome se carguen correctamente */
+.fas,
+.far,
+.fab {
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+}
+
+/* Estilos para el contenedor principal de la aplicación */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  transition: margin-left var(--transition-normal);
+  margin-left: 250px;
+  width: calc(100% - 250px);
+}
+
+body.sidebar-collapsed .main-content {
+  margin-left: 70px;
+  width: calc(100% - 70px);
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  body.sidebar-collapsed .main-content {
+    margin-left: 0;
+  }
+}

@@ -1,0 +1,211 @@
+<!-- productos.component.html -->
+<div class="productos-container">
+  <div class="page-header">
+    <div class="page-title">
+      <h2>Gestión de Productos</h2>
+      <p>Administre el catálogo de productos de la panadería</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-primary" (click)="toggleFormMode('crear')">
+        <span>➕</span> Nuevo Producto
+      </button>
+    </div>
+  </div>
+
+  <!-- Formulario para crear/editar producto -->
+  <div class="form-container" *ngIf="formMode !== 'oculto'" [@formAnimation]>
+    <div class="card">
+      <div class="card-header">
+        <h3>
+          {{ formMode === 'crear' ? 'Crear Nuevo Producto' : 'Editar Producto' }}
+        </h3>
+        <button class="btn-close" (click)="toggleFormMode('oculto')">✕</button>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="productoForm" (ngSubmit)="guardarProducto()">
+          <div class="row">
+            <div class="col">
+              <label for="nombre">Nombre</label>
+              <input type="text" id="nombre" formControlName="nombre"
+                     class="form-control"
+                     [class.is-invalid]="submitted && f['nombre'].errors">
+              <div class="invalid-feedback" *ngIf="submitted && f['nombre'].errors">
+                El nombre es requerido
+              </div>
+            </div>
+            <div class="col">
+              <label for="categoria">Categoría</label>
+              <select id="categoria" formControlName="categoria"
+                      class="form-control"
+                      [class.is-invalid]="submitted && f['categoria'].errors">
+                <option value="">Seleccione una categoría</option>
+                <option value="Panes">Panes</option>
+                <option value="Bollería">Bollería</option>
+                <option value="Pasteles">Pasteles</option>
+                <option value="Galletas">Dulces</option>
+                <option value="Galletas">Salados</option>
+                <option value="Galletas">Panes Especiales</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="submitted && f['categoria'].errors">
+                La categoría es requerida
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="descripcion">Descripción</label>
+            <textarea id="descripcion" formControlName="descripcion" rows="3"
+                      class="form-control"
+                      [class.is-invalid]="submitted && f['descripcion'].errors"></textarea>
+            <div class="invalid-feedback" *ngIf="submitted && f['descripcion'].errors">
+              La descripción es requerida
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <label for="precio">Precio ($)</label>
+              <input type="number" id="precio" formControlName="precio" step="0.01"
+                     class="form-control"
+                     [class.is-invalid]="submitted && f['precio'].errors">
+              <div class="invalid-feedback" *ngIf="submitted && f['precio'].errors">
+                <span *ngIf="f['precio'].errors?.['required']">El precio es requerido</span>
+                <span *ngIf="f['precio'].errors?.['min']">El precio debe ser mayor a 0</span>
+              </div>
+            </div>
+            <div class="col">
+              <label for="stock">Stock</label>
+              <input type="number" id="stock" formControlName="stock"
+                     class="form-control"
+                     [class.is-invalid]="submitted && f['stock'].errors">
+              <div class="invalid-feedback" *ngIf="submitted && f['stock'].errors">
+                <span *ngIf="f['stock'].errors?.['required']">El stock es requerido</span>
+                <span *ngIf="f['stock'].errors?.['min']">El stock debe ser ≥ 0</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="imagen">Imagen del Producto</label>
+            <input type="file" id="imagen" (change)="onFileSelected($event)"
+                   accept="image/*" class="form-control">
+            <small class="form-text text-muted">
+              Seleccione una imagen para el producto
+            </small>
+          </div>
+
+          <div class="form-group form-check">
+            <input type="checkbox" id="disponible" formControlName="disponible"
+                   class="form-check-input">
+            <label for="disponible" class="form-check-label">
+              Disponible para la venta
+            </label>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline"
+                    (click)="toggleFormMode('oculto')">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vista de productos -->
+  <div class="productos-view">
+    <div class="card">
+      <div class="card-header">
+        <h3>Catálogo de Productos</h3>
+        <div class="card-filters">
+          <app-search-bar
+            placeholder="Buscar producto..."
+            [(searchValue)]="searchTerm"
+            (search)="onSearchChange()"
+          ></app-search-bar>
+
+          <select class="form-control filter-select" [(ngModel)]="filtroCategoria" (change)="filtrarProductos()">
+            <option value="todos">Todas las categorías</option>
+            <option *ngFor="let categoria of categorias" [value]="categoria">{{ categoria }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="card-body">
+        <div *ngIf="loading" class="loading-container">
+          <div class="loader"></div><p>Cargando productos...</p>
+        </div>
+        <div *ngIf="error" class="error-container">
+          <p>{{ error }}</p>
+          <button class="btn btn-primary" (click)="getProductos()">Reintentar</button>
+        </div>
+        <div *ngIf="!loading && !error" class="productos-grid">
+          <div class="producto-card" *ngFor="let producto of filteredProductos">
+            <div class="producto-image">
+              <img
+                *ngIf="producto.id && imagenUrls[producto.id]"
+                [src]="imagenUrls[producto.id!]"
+                [alt]="producto.nombre"
+                class="img-fluid"
+              />
+
+              <div class="producto-badge" *ngIf="producto.stock <= 10">
+                ¡Últimas unidades!
+              </div>
+            </div>
+            <div class="producto-content">
+              <h4>{{ producto.nombre }}</h4>
+              <p class="producto-category">{{ producto.categoria }}</p>
+              <p>{{ producto.descripcion }}</p>
+              <div class="producto-details">
+                <div class="producto-price">
+                  {{ producto.precio | number:'1.2-2' }}
+                </div>
+                <div class="producto-stock"
+                     [class.low-stock]="producto.stock <= 10">
+                  Stock: {{ producto.stock }}
+                </div>
+              </div>
+              <div class="producto-status">
+                <span class="badge"
+                      [ngClass]="producto.disponible ? 'badge-success' : 'badge-danger'">
+                  {{ producto.disponible ? 'Disponible' : 'No disponible' }}
+                </span>
+              </div>
+            </div>
+            <div class="producto-actions">
+              <button class="btn btn-sm btn-outline"
+                      (click)="editarProducto(producto)">Editar</button>
+              <button class="btn btn-sm btn-danger"
+                      (click)="confirmarEliminar(producto)">Eliminar</button>
+            </div>
+          </div>
+          <div *ngIf="filteredProductos.length === 0" class="no-results">
+            <p>No se encontraron productos</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de confirmación para eliminar -->
+  <div class="modal" *ngIf="showDeleteModal">
+    <div class="modal-backdrop" (click)="showDeleteModal = false"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Confirmar Eliminación</h3>
+        <button class="btn-close" (click)="showDeleteModal = false">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>
+          ¿Está seguro que desea eliminar
+          <strong>{{ productoSeleccionado?.nombre }}</strong>?
+        </p>
+        <p>Esta acción no se puede deshacer.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" (click)="showDeleteModal = false">Cancelar</button>
+        <button class="btn btn-danger" (click)="eliminarProducto()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>

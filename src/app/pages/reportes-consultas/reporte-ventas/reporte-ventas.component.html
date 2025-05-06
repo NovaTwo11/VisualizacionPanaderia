@@ -1,0 +1,120 @@
+<div class="reporte-ventas-container">
+  <div class="section-header">
+    <h2>Reporte de Ventas</h2>
+    <p class="section-description">
+      Visualice el resumen de ventas del período y tipo seleccionados.
+    </p>
+  </div>
+
+  <div class="actions-container">
+    <!-- Período -->
+    <div class="filter-container">
+      <label for="filtroTiempo">Período:</label>
+      <select id="filtroTiempo" class="form-control" (change)="cambiarFiltro($event)">
+        <option value="siempre" [selected]="filtroTiempo==='siempre'">Siempre</option>
+        <option value="mensual" [selected]="filtroTiempo==='mensual'">Mensual</option>
+        <option value="semanal" [selected]="filtroTiempo==='semanal'">Semanal</option>
+        <option value="diario"  [selected]="filtroTiempo==='diario'">Diario</option>
+      </select>
+    </div>
+
+    <!-- Tipo de Reporte -->
+    <div class="filter-container">
+      <label for="filtroTipo">Tipo de Reporte:</label>
+      <select id="filtroTipo" class="form-control" (change)="cambiarTipoReporte($event)">
+        <option value="GENERAL"      [selected]="filtroTipoReporte==='GENERAL'">General</option>
+        <option value="POR_PRODUCTO" [selected]="filtroTipoReporte==='POR_PRODUCTO'">Por Producto</option>
+        <option value="POR_CLIENTE"  [selected]="filtroTipoReporte==='POR_CLIENTE'">Por Cliente</option>
+      </select>
+    </div>
+
+    <!-- Método de Pago (solo si Tipo = General) -->
+    <div class="filter-container" *ngIf="filtroTipoReporte==='GENERAL'">
+      <label for="filtroMetodo">Método Pago:</label>
+      <select id="filtroMetodo" class="form-control" (change)="cambiarMetodoPago($event)">
+        <option value="TODOS"         [selected]="filtroMetodoPago==='TODOS'">Todos</option>
+        <option value="EFECTIVO"      [selected]="filtroMetodoPago==='EFECTIVO'">Efectivo</option>
+        <option value="TARJETA"       [selected]="filtroMetodoPago==='TARJETA'">Tarjeta</option>
+        <option value="TRANSFERENCIA" [selected]="filtroMetodoPago==='TRANSFERENCIA'">Transferencia</option>
+      </select>
+    </div>
+
+    <button class="btn btn-primary" (click)="exportarReporte()">Exportar</button>
+  </div>
+
+  <div *ngIf="!loading">
+    <div class="table-responsive">
+      <table id="tablaVentas" class="table">
+        <thead>
+        <tr>
+          <!-- Columnas para Tipo = General -->
+          <ng-container *ngIf="filtroTipoReporte==='GENERAL'">
+            <th>Método de Pago</th>
+            <th>Total Generado</th>
+            <th># Pedidos</th>
+            <th>Ticket Promedio</th>
+          </ng-container>
+
+          <!-- Columnas para Tipo = Por Producto -->
+          <ng-container *ngIf="filtroTipoReporte==='POR_PRODUCTO'">
+            <th>Producto</th>
+            <th>Stock Actual</th>
+            <th>Precio Unitario</th>
+            <th>Cantidad Vendida</th>
+          </ng-container>
+
+          <!-- Columnas para Tipo = Por Cliente -->
+          <ng-container *ngIf="filtroTipoReporte==='POR_CLIENTE'">
+            <th>Cliente</th>
+            <th>Total Unidades Compradas</th>
+            <th>Detalle de Productos</th>
+          </ng-container>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Filas para Tipo = General -->
+        <ng-container *ngIf="filtroTipoReporte==='GENERAL'">
+          <tr *ngFor="let d of detalles">
+            <td>{{ d.metodoPago }}</td>
+            <td>{{ d.totalGenerado | currency }}</td>
+            <td>{{ d.numeroPedidos }}</td>
+            <td>{{ d.ticketPromedio | currency }}</td>
+          </tr>
+        </ng-container>
+
+        <!-- Filas para Tipo = Por Producto -->
+        <ng-container *ngIf="filtroTipoReporte==='POR_PRODUCTO'">
+          <tr *ngFor="let d of detalles">
+            <td>{{ d.nombreProducto }}</td>
+            <td>{{ d.stock }}</td>
+            <td>{{ d.precioUnitario | currency }}</td>
+            <td>{{ d.cantidadVendida }}</td>
+          </tr>
+        </ng-container>
+
+        <!-- Filas para Tipo = Por Cliente -->
+        <ng-container *ngIf="filtroTipoReporte==='POR_CLIENTE'">
+          <tr *ngFor="let d of detalles">
+            <td>{{ d.nombreCliente }}</td>
+            <td>{{ d.totalUnidades }}</td>
+            <td>
+              <ul class="product-detail-list">
+                <li *ngFor="let p of d.detalleProductos">
+                  {{ p.nombre }} ({{ p.cantidad }})
+                </li>
+              </ul>
+            </td>
+          </tr>
+        </ng-container>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="chart-container" style="height: 400px;">
+      <canvas #ventasCanvas></canvas>
+    </div>
+  </div>
+
+  <div class="loading" *ngIf="loading">Cargando datos del reporte...</div>
+  <div class="error"   *ngIf="error">{{ error }}</div>
+</div>

@@ -1,0 +1,301 @@
+<div class="ayuda-container">
+  <div class="page-header">
+    <div class="page-title">
+      <h2>Centro de Ayuda</h2>
+      <p>Encuentre respuestas a sus preguntas y obtenga soporte</p>
+    </div>
+  </div>
+
+  <div class="tabs-container">
+    <div class="tabs-header">
+      <div class="tab" [class.active]="activeTab === 'manual'" (click)="setActiveTab('manual')">
+        <div class="tab-icon">📖</div>
+        <div class="tab-text">Manual de Usuario</div>
+      </div>
+
+      <div class="tab" [class.active]="activeTab === 'faq'" (click)="setActiveTab('faq')">
+        <div class="tab-icon">❓</div>
+        <div class="tab-text">Preguntas Frecuentes</div>
+      </div>
+
+      <div class="tab" [class.active]="activeTab === 'contacto'" (click)="setActiveTab('contacto')">
+        <div class="tab-icon">📞</div>
+        <div class="tab-text">Contactar Soporte</div>
+      </div>
+    </div>
+
+    <div class="tabs-content">
+      <div class="tab-panel" [class.active]="activeTab === 'manual'">
+        <div class="card">
+          <div class="card-header">
+            <h3>Manual de Usuario</h3>
+          </div>
+
+          <div class="card-body">
+            <div class="manual-content">
+              <div class="manual-section">
+                <h4>1. Introducción</h4>
+                <p>Bienvenido al sistema de gestión para panaderías. Este manual le guiará a través de las funcionalidades principales del sistema y le ayudará a sacar el máximo provecho de todas sus características.</p>
+              </div>
+
+              <div class="manual-section">
+                <h4>2. Primeros Pasos</h4>
+                <p>Para comenzar a utilizar el sistema, siga estos pasos:</p>
+                <ol>
+                  <li>Inicie sesión con sus credenciales proporcionadas por el administrador.</li>
+                  <li>Familiarícese con la interfaz de usuario y el menú de navegación.</li>
+                  <li>Configure los parámetros básicos del sistema en la sección de Configuración.</li>
+                </ol>
+              </div>
+
+              <div class="manual-section">
+                <h4>3. Gestión de Entidades</h4>
+                <p>El sistema permite gestionar diferentes entidades:</p>
+                <ul>
+                  <li><strong>Clientes:</strong> Registre y administre la información de sus clientes.</li>
+                  <li><strong>Productos:</strong> Gestione el catálogo de productos de la panadería.</li>
+                  <li><strong>Administradores:</strong> Configure los usuarios con acceso al sistema.</li>
+                  <li><strong>Repartidores:</strong> Administre el personal encargado de las entregas.</li>
+                </ul>
+              </div>
+
+              <div class="manual-section">
+                <h4>4. Gestión de Pedidos</h4>
+                <p>La gestión de pedidos es una de las funcionalidades principales del sistema:</p>
+                <ul>
+                  <li>Cree nuevos pedidos seleccionando cliente, productos y método de pago.</li>
+                  <li>Actualice el estado de los pedidos a medida que avanzan en el proceso.</li>
+                  <li>Asigne repartidores para las entregas.</li>
+                  <li>Consulte el historial de pedidos y genere reportes.</li>
+                </ul>
+              </div>
+
+              <div class="manual-section">
+                <h4>5. Reportes y Consultas</h4>
+                <p>El sistema ofrece diferentes reportes para analizar el rendimiento del negocio:</p>
+                <ul>
+                  <li>Reporte de ventas por período.</li>
+                  <li>Análisis de productos más vendidos.</li>
+                  <li>Estadísticas de clientes frecuentes.</li>
+                  <li>Rendimiento de repartidores.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="manual-actions">
+              <button class="btn btn-primary">Descargar Manual Completo (PDF)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" [class.active]="activeTab === 'faq'">
+        <div class="card">
+          <div class="card-header">
+            <h3>Preguntas Frecuentes</h3>
+          </div>
+
+          <div class="card-body">
+            <div class="faq-content">
+              <div class="accordion">
+                <div class="accordion-item" [class.active]="activeFaq === 1">
+                  <div class="accordion-header" (click)="toggleFaq(1)">
+                    <h4>¿Cómo puedo crear un nuevo pedido?</h4>
+                    <span class="accordion-icon">{{ activeFaq === 1 ? '▼' : '▶' }}</span>
+                  </div>
+                  <div class="accordion-content" [class.expanded]="activeFaq === 1">
+                    <p>Para crear un nuevo pedido, siga estos pasos:</p>
+                    <ol>
+                      <li>Vaya a la sección "Transacciones" > "Pedidos" en el menú lateral.</li>
+                      <li>Haga clic en el botón "Nuevo Pedido".</li>
+                      <li>Seleccione el cliente o cree uno nuevo si es necesario.</li>
+                      <li>Agregue los productos al pedido, especificando la cantidad.</li>
+                      <li>Complete la información de entrega y método de pago.</li>
+                      <li>Haga clic en "Guardar" para registrar el pedido.</li>
+                    </ol>
+                  </div>
+                </div>
+
+                <div class="accordion-item" [class.active]="activeFaq === 2">
+                  <div class="accordion-header" (click)="toggleFaq(2)">
+                    <h4>¿Cómo actualizo el inventario de productos?</h4>
+                    <span class="accordion-icon">{{ activeFaq === 2 ? '▼' : '▶' }}</span>
+                  </div>
+                  <div class="accordion-content" [class.expanded]="activeFaq === 2">
+                    <p>Para actualizar el inventario de productos, puede seguir estos pasos:</p>
+                    <ol>
+                      <li>Vaya a la sección "Entidades" > "Productos" en el menú lateral.</li>
+                      <li>Busque el producto que desea actualizar y haga clic en el botón "Editar".</li>
+                      <li>Actualice el campo "Stock" con la nueva cantidad disponible.</li>
+                      <li>Haga clic en "Guardar" para aplicar los cambios.</li>
+                    </ol>
+                    <p>También puede realizar actualizaciones masivas importando un archivo CSV desde la sección de utilidades.</p>
+                  </div>
+                </div>
+
+                <div class="accordion-item" [class.active]="activeFaq === 3">
+                  <div class="accordion-header" (click)="toggleFaq(3)">
+                    <h4>¿Cómo genero un reporte de ventas?</h4>
+                    <span class="accordion-icon">{{ activeFaq === 3 ? '▼' : '▶' }}</span>
+                  </div>
+                  <div class="accordion-content" [class.expanded]="activeFaq === 3">
+                    <p>Para generar un reporte de ventas, siga estos pasos:</p>
+                    <ol>
+                      <li>Vaya a la sección "Reportes/Consultas" > "Reporte de Ventas" en el menú lateral.</li>
+                      <li>Seleccione el rango de fechas para el reporte.</li>
+                      <li>Aplique filtros adicionales si es necesario (por producto, cliente, etc.).</li>
+                      <li>Haga clic en "Generar Reporte".</li>
+                      <li>Puede visualizar el reporte en pantalla o exportarlo en diferentes formatos (PDF, Excel, CSV).</li>
+                    </ol>
+                  </div>
+                </div>
+
+                <div class="accordion-item" [class.active]="activeFaq === 4">
+                  <div class="accordion-header" (click)="toggleFaq(4)">
+                    <h4>¿Cómo asigno un repartidor a un pedido?</h4>
+                    <span class="accordion-icon">{{ activeFaq === 4 ? '▼' : '▶' }}</span>
+                  </div>
+                  <div class="accordion-content" [class.expanded]="activeFaq === 4">
+                    <p>Para asignar un repartidor a un pedido, puede seguir estos pasos:</p>
+                    <ol>
+                      <li>Vaya a la sección "Transacciones" > "Pedidos" en el menú lateral.</li>
+                      <li>Busque el pedido al que desea asignar un repartidor y haga clic en "Editar".</li>
+                      <li>En el formulario de edición, seleccione un repartidor de la lista desplegable.</li>
+                      <li>Actualice el estado del pedido a "En camino" si corresponde.</li>
+                      <li>Haga clic en "Guardar" para aplicar los cambios.</li>
+                    </ol>
+                  </div>
+                </div>
+
+                <div class="accordion-item" [class.active]="activeFaq === 5">
+                  <div class="accordion-header" (click)="toggleFaq(5)">
+                    <h4>¿Cómo configuro las notificaciones del sistema?</h4>
+                    <span class="accordion-icon">{{ activeFaq === 5 ? '▼' : '▶' }}</span>
+                  </div>
+                  <div class="accordion-content" [class.expanded]="activeFaq === 5">
+                    <p>Para configurar las notificaciones del sistema, siga estos pasos:</p>
+                    <ol>
+                      <li>Vaya a la sección "Utilidades" > "Configuración" en el menú lateral.</li>
+                      <li>Haga clic en la tarjeta "Notificaciones" o acceda a la pestaña correspondiente.</li>
+                      <li>Active o desactive las opciones según sus preferencias.</li>
+                      <li>Configure el umbral de stock bajo si desea recibir alertas de inventario.</li>
+                      <li>Haga clic en "Guardar Configuración" para aplicar los cambios.</li>
+                    </ol>
+                  </div>
+                </div>
+
+                <div class="accordion-item" [class.active]="activeFaq === 6">
+                  <div class="accordion-header" (click)="toggleFaq(6)">
+                    <h4>¿Cómo puedo cambiar el tema de la aplicación?</h4>
+                    <span class="accordion-icon">{{ activeFaq === 6 ? '▼' : '▶' }}</span>
+                  </div>
+                  <div class="accordion-content" [class.expanded]="activeFaq === 6">
+                    <p>Para cambiar el tema visual de la aplicación:</p>
+                    <ol>
+                      <li>Vaya a la sección "Utilidades" > "Configuración" en el menú lateral.</li>
+                      <li>Haga clic en la tarjeta "Tema de Color" o acceda a la pestaña correspondiente.</li>
+                      <li>Seleccione uno de los temas predefinidos o personalice los colores.</li>
+                      <li>Haga clic en "Aplicar Tema" para guardar los cambios.</li>
+                    </ol>
+                    <p>Los cambios se aplicarán inmediatamente a toda la interfaz de usuario.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" [class.active]="activeTab === 'contacto'">
+        <div class="card">
+          <div class="card-header">
+            <h3>Contactar Soporte</h3>
+          </div>
+
+          <div class="card-body">
+            <div class="contacto-content">
+              <div class="contacto-info">
+                <p>Si necesita ayuda adicional, puede contactar a nuestro equipo de soporte a través de los siguientes medios:</p>
+
+                <div class="contacto-metodos">
+                  <div class="contacto-metodo">
+                    <div class="contacto-icon">📧</div>
+                    <div class="contacto-details">
+                      <h4>Email</h4>
+                      <p>soporte&#64;panaderiaelbuensabor.com</p>
+                      <p>Tiempo de respuesta: 24-48 horas</p>
+                    </div>
+                  </div>
+
+                  <div class="contacto-metodo">
+                    <div class="contacto-icon">📞</div>
+                    <div class="contacto-details">
+                      <h4>Teléfono</h4>
+                      <p>+1 (555) 123-4567</p>
+                      <p>Lunes a Viernes: 9:00 AM - 6:00 PM</p>
+                    </div>
+                  </div>
+
+                  <div class="contacto-metodo">
+                    <div class="contacto-icon">💬</div>
+                    <div class="contacto-details">
+                      <h4>Chat en Vivo</h4>
+                      <p>Disponible en horario laboral</p>
+                      <button class="btn btn-sm btn-primary">Iniciar Chat</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="contacto-form">
+                <h4>Enviar Mensaje</h4>
+                <form [formGroup]="contactForm" (ngSubmit)="enviarMensaje()">
+                  <div class="form-group">
+                    <label class="form-label" for="nombre">Nombre</label>
+                    <input type="text" id="nombre" formControlName="nombre" class="form-control"
+                           [class.is-invalid]="submitted && contactForm['controls']['nombre'].errors">
+                    <div class="invalid-feedback" *ngIf="submitted && contactForm['controls']?.['nombre']?.errors">
+                      El nombre es requerido
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="email">Email</label>
+                    <input type="email" id="email" formControlName="email" class="form-control"
+                           [class.is-invalid]="submitted && contactForm['controls']['email'].errors">
+                    <div class="invalid-feedback" *ngIf="submitted && contactForm['controls']?.['email']?.errors">
+                      <span *ngIf="contactForm['controls']?.['email']?.errors?.['required']">El email es requerido</span>
+                      <span *ngIf="contactForm['controls']?.['email']?.errors?.['email']">Ingrese un email válido</span>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="asunto">Asunto</label>
+                    <input type="text" id="asunto" formControlName="asunto" class="form-control"
+                           [class.is-invalid]="submitted && contactForm['controls']['asunto'].errors">
+                    <div class="invalid-feedback" *ngIf="submitted && contactForm['controls']?.['asunto']?.errors">
+                      El asunto es requerido
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="mensaje">Mensaje</label>
+                    <textarea id="mensaje" formControlName="mensaje" class="form-control" rows="5"
+                              [class.is-invalid]="submitted && contactForm['controls']['mensaje'].errors"></textarea>
+                    <div class="invalid-feedback" *ngIf="submitted && contactForm['controls']?.['mensaje']?.errors">
+                      El mensaje es requerido
+                    </div>
+                  </div>
+
+                  <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Enviar Mensaje</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

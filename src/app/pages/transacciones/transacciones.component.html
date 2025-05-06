@@ -1,0 +1,19 @@
+<div class="transacciones-container">
+  <div class="section-header">
+    <h2>Transacciones</h2>
+    <p class="section-description">
+      Gestione las transacciones del sistema: pedidos, ventas y entregas.
+    </p>
+  </div>
+
+  <div class="transacciones-nav">
+    <a [routerLink]="['/transacciones/pedidos']" routerLinkActive="active" class="transaccion-nav-item">
+      <div class="transaccion-icon">🛒</div>
+      <span>Pedidos</span>
+    </a>
+  </div>
+
+  <div class="transacciones-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

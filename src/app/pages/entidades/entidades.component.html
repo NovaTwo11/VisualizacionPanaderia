@@ -1,0 +1,31 @@
+<div class="entidades-container">
+  <div class="section-header">
+    <h2>Entidades</h2>
+    <p class="section-description">
+      Gestione las entidades principales del sistema: administradores, clientes, productos y repartidores.
+    </p>
+  </div>
+
+  <div class="entidades-nav">
+    <a [routerLink]="['/entidades/administradores']" routerLinkActive="active" class="entidad-nav-item">
+      <div class="entidad-icon">👤</div>
+      <span>Administradores</span>
+    </a>
+    <a [routerLink]="['/entidades/clientes']" routerLinkActive="active" class="entidad-nav-item">
+      <div class="entidad-icon">👥</div>
+      <span>Clientes</span>
+    </a>
+    <a [routerLink]="['/entidades/productos']" routerLinkActive="active" class="entidad-nav-item">
+      <div class="entidad-icon">🍞</div>
+      <span>Productos</span>
+    </a>
+    <a [routerLink]="['/entidades/repartidores']" routerLinkActive="active" class="entidad-nav-item">
+      <div class="entidad-icon">🚚</div>
+      <span>Repartidores</span>
+    </a>
+  </div>
+
+  <div class="entidades-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

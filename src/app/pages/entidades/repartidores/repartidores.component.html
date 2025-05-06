@@ -1,0 +1,210 @@
+<div class="repartidores-container">
+  <div class="page-header">
+    <div class="page-title">
+      <h2>Gestión de Repartidores</h2>
+      <p>Administre la información de los repartidores</p>
+    </div>
+
+    <div class="page-actions">
+      <button class="btn btn-primary" (click)="toggleFormMode('crear')">
+        <span>➕</span> Nuevo Repartidor
+      </button>
+    </div>
+  </div>
+
+  <!-- Formulario para crear/editar repartidor -->
+  <div class="form-container" *ngIf="formMode !== 'oculto'" [@formAnimation]>
+    <div class="card">
+      <div class="card-header">
+        <h3>{{ formMode === 'crear' ? 'Crear Nuevo Repartidor' : 'Editar Repartidor' }}</h3>
+        <button class="btn-close" (click)="toggleFormMode('oculto')">✕</button>
+      </div>
+
+      <div class="card-body">
+        <form [formGroup]="repartidorForm" (ngSubmit)="guardarRepartidor()">
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label class="form-label" for="nombre">Nombre</label>
+                <input type="text" id="nombre" formControlName="nombre" class="form-control"
+                       [class.is-invalid]="submitted && f['nombre'].errors">
+                <div class="invalid-feedback" *ngIf="submitted && f['nombre'].errors">
+                  El nombre es requerido
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="form-group">
+                <label class="form-label" for="apellido">Apellido</label>
+                <input type="text" id="apellido" formControlName="apellido" class="form-control"
+                       [class.is-invalid]="submitted && f['apellido'].errors">
+                <div class="invalid-feedback" *ngIf="submitted && f['apellido'].errors">
+                  El apellido es requerido
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label class="form-label" for="email">Email</label>
+                <input type="email" id="email" formControlName="email" class="form-control"
+                       [class.is-invalid]="submitted && f['email'].errors">
+                <div class="invalid-feedback" *ngIf="submitted && f['email'].errors">
+                  <span *ngIf="f['email']?.errors?.['required']">El email es requerido</span>
+                  <span *ngIf="f['email']?.errors?.['email']">Ingrese un email válido</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="form-group">
+                <label class="form-label" for="telefono">Teléfono</label>
+                <input type="text" id="telefono" formControlName="telefono" class="form-control"
+                       [class.is-invalid]="submitted && f['telefono'].errors">
+                <div class="invalid-feedback" *ngIf="submitted && f['telefono'].errors">
+                  El teléfono es requerido
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label class="form-label" for="vehiculo">Vehículo</label>
+                <select id="vehiculo" formControlName="vehiculo" class="form-control"
+                        [class.is-invalid]="submitted && f['vehiculo'].errors">
+                  <option value="">Seleccione un vehículo</option>
+                  <option value="Motocicleta">Motocicleta</option>
+                  <option value="Automóvil">Automóvil</option>
+                  <option value="Bicicleta">Bicicleta</option>
+                </select>
+                <div class="invalid-feedback" *ngIf="submitted && f['vehiculo'].errors">
+                  El vehículo es requerido
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="form-group">
+                <label class="form-label" for="licencia">Licencia</label>
+                <input type="text" id="licencia" formControlName="licencia" class="form-control"
+                       [class.is-invalid]="submitted && f['licencia'].errors">
+                <div class="invalid-feedback" *ngIf="submitted && f['licencia'].errors">
+                  La licencia es requerida
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-check">
+              <input type="checkbox" id="disponible" formControlName="disponible" class="form-check-input">
+              <label class="form-check-label" for="disponible">Disponible para entregas</label>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" (click)="toggleFormMode('oculto')">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Listado de repartidores -->
+  <div class="repartidores-list">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <h3>Listado de Repartidores</h3>
+        </div>
+
+        <div class="card-filters">
+          <div class="search-box">
+            <input type="text" placeholder="Buscar repartidor..." class="search-input" [(ngModel)]="searchTerm" (input)="onSearchChange()">
+            <button class="search-button">🔍</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div *ngIf="loading" class="loading-container">
+          <div class="loader"></div>
+          <p>Cargando repartidores...</p>
+        </div>
+
+        <div *ngIf="error" class="error-container">
+          <p>{{ error }}</p>
+          <button class="btn btn-primary" (click)="getRepartidores()">Reintentar</button>
+        </div>
+
+        <div *ngIf="!loading && !error" class="table-container">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Teléfono</th>
+              <th>Vehículo</th>
+              <th>Licencia</th>
+              <th>Pedidos Entregados</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let repartidor of filteredRepartidores">
+              <td>{{ repartidor.id }}</td>
+              <td>{{ repartidor.nombre }} {{ repartidor.apellido }}</td>
+              <td>{{ repartidor.email }}</td>
+              <td>{{ repartidor.telefono }}</td>
+              <td>{{ repartidor.vehiculo }}</td>
+              <td>{{ repartidor.licencia }}</td>
+              <td>{{ repartidor.pedidosEntregados }}</td>
+              <td>
+                  <span class="badge" [ngClass]="repartidor.disponible ? 'badge-success' : 'badge-danger'">
+                    {{ repartidor.disponible ? 'Disponible' : 'No disponible' }}
+                  </span>
+              </td>
+              <td>
+                <div class="table-actions">
+                  <button class="btn-icon" title="Editar" (click)="editarRepartidor(repartidor)">✏️</button>
+                  <button class="btn-icon" title="Eliminar" (click)="confirmarEliminar(repartidor)">🗑️</button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="filteredRepartidores.length === 0">
+              <td colspan="9" class="text-center">No se encontraron repartidores</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de confirmación para eliminar -->
+  <div class="modal" *ngIf="showDeleteModal">
+    <div class="modal-backdrop" (click)="showDeleteModal = false"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Confirmar Eliminación</h3>
+        <button class="btn-close" (click)="showDeleteModal = false">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>¿Está seguro que desea eliminar al repartidor <strong>{{ repartidorSeleccionado?.nombre }} {{ repartidorSeleccionado?.apellido }}</strong>?</p>
+        <p>Esta acción no se puede deshacer.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" (click)="showDeleteModal = false">Cancelar</button>
+        <button class="btn btn-danger" (click)="eliminarRepartidor()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,170 @@
+<!-- clientes.component.html -->
+<div class="clientes-container">
+  <div class="page-header">
+    <div class="page-title">
+      <h2>Gestión de Clientes</h2>
+      <p>Administre la información de sus clientes</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-primary" (click)="toggleFormMode('crear')">
+        <span>➕</span> Nuevo Cliente
+      </button>
+    </div>
+  </div>
+
+  <!-- Formulario para crear/editar cliente -->
+  <div class="form-container" *ngIf="formMode !== 'oculto'" [@formAnimation]>
+    <div class="card">
+      <div class="card-header">
+        <h3>{{ formMode === 'crear' ? 'Crear Nuevo Cliente' : 'Editar Cliente' }}</h3>
+        <button class="btn-close" (click)="toggleFormMode('oculto')">✕</button>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="clienteForm" (ngSubmit)="guardarCliente()">
+          <div class="row">
+            <div class="col">
+              <label for="nombre">Nombre</label>
+              <input type="text" id="nombre" formControlName="nombre"
+                     class="form-control"
+                     [class.is-invalid]="submitted && f['nombre'].errors">
+              <div class="invalid-feedback" *ngIf="submitted && f['nombre'].errors">
+                El nombre es requerido
+              </div>
+            </div>
+            <div class="col">
+              <label for="apellido">Apellido</label>
+              <input type="text" id="apellido" formControlName="apellido"
+                     class="form-control"
+                     [class.is-invalid]="submitted && f['apellido'].errors">
+              <div class="invalid-feedback" *ngIf="submitted && f['apellido'].errors">
+                El apellido es requerido
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <label for="email">Email</label>
+              <input type="email" id="email" formControlName="email"
+                     class="form-control"
+                     [class.is-invalid]="submitted && f['email'].errors">
+              <div class="invalid-feedback" *ngIf="submitted && f['email'].errors">
+                <span *ngIf="f['email'].errors?.['required']">El email es requerido</span>
+                <span *ngIf="f['email'].errors?.['email']">Ingrese un email válido</span>
+              </div>
+            </div>
+            <div class="col">
+              <label for="telefono">Teléfono</label>
+              <input type="text" id="telefono" formControlName="telefono"
+                     class="form-control"
+                     [class.is-invalid]="submitted && f['telefono'].errors">
+              <div class="invalid-feedback" *ngIf="submitted && f['telefono'].errors">
+                El teléfono es requerido
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="direccion">Dirección</label>
+            <input type="text" id="direccion" formControlName="direccion"
+                   class="form-control"
+                   [class.is-invalid]="submitted && f['direccion'].errors">
+            <div class="invalid-feedback" *ngIf="submitted && f['direccion'].errors">
+              La dirección es requerida
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" (click)="toggleFormMode('oculto')">
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Listado de clientes -->
+  <div class="clientes-list">
+    <div class="card">
+      <div class="card-header">
+        <h3>Listado de Clientes</h3>
+        <div class="card-filters">
+          <app-search-bar
+            placeholder="Buscar cliente..."
+            [(searchValue)]="searchTerm"
+            (search)="onSearchChange()"
+          ></app-search-bar>
+        </div>
+      </div>
+      <div class="card-body">
+        <div *ngIf="loading" class="loading-container">
+          <div class="loader"></div><p>Cargando clientes...</p>
+        </div>
+        <div *ngIf="error" class="error-container">
+          <p>{{ error }}</p>
+          <button class="btn btn-primary" (click)="getClientes()">Reintentar</button>
+        </div>
+        <div *ngIf="!loading && !error" class="table-container">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>ID</th><th>Nombre</th><th>Email</th><th>Teléfono</th>
+              <th>Dirección</th><th>Total Compras</th><th>Estado</th><th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let cliente of filteredClientes">
+              <td>{{ cliente.id }}</td>
+              <td>{{ cliente.nombre }} {{ cliente.apellido }}</td>
+              <td>{{ cliente.email }}</td>
+              <td>{{ cliente.telefono }}</td>
+              <td>{{ cliente.direccion }}</td>
+              <td>{{ cliente.totalCompras | number:'1.2-2' }}</td>
+              <td>
+                  <span class="badge"
+                        [ngClass]="cliente.activo ? 'badge-success' : 'badge-danger'">
+                    {{ cliente.activo ? 'Activo' : 'Inactivo' }}
+                  </span>
+              </td>
+              <td class="table-actions">
+                <button class="btn-icon" title="Editar"
+                        (click)="editarCliente(cliente)">✏️</button>
+                <button class="btn-icon" title="Eliminar"
+                        (click)="confirmarEliminar(cliente)">🗑️</button>
+              </td>
+            </tr>
+            <tr *ngIf="filteredClientes.length === 0">
+              <td colspan="8" class="text-center">No se encontraron clientes</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de confirmación para eliminar -->
+  <div class="modal" *ngIf="showDeleteModal">
+    <div class="modal-backdrop" (click)="showDeleteModal = false"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Confirmar Eliminación</h3>
+        <button class="btn-close" (click)="showDeleteModal = false">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>
+          ¿Está seguro que desea eliminar al cliente
+          <strong>{{ clienteSeleccionado?.nombre }}
+            {{ clienteSeleccionado?.apellido }}</strong>?
+        </p>
+        <p>Esta acción no se puede deshacer.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" (click)="showDeleteModal = false">Cancelar</button>
+        <button class="btn btn-danger" (click)="eliminarCliente()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>

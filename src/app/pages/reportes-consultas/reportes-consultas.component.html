@@ -1,0 +1,23 @@
+<div class="reportes-consultas-container">
+  <div class="section-header">
+    <h2>Reportes y Consultas</h2>
+    <p class="section-description">
+      Visualice reportes y consultas sobre ventas, productos, clientes y más.
+    </p>
+  </div>
+
+  <div class="reportes-nav">
+    <a [routerLink]="['/reportes-consultas/ventas']" routerLinkActive="active" class="reporte-nav-item">
+      <div class="reporte-icon">📊</div>
+      <span>Reporte de Ventas</span>
+    </a>
+    <a [routerLink]="['/reportes-consultas/productos']" routerLinkActive="active" class="reporte-nav-item">
+      <div class="reporte-icon">📈</div>
+      <span>Reporte de Productos</span>
+    </a>
+  </div>
+
+  <div class="reportes-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

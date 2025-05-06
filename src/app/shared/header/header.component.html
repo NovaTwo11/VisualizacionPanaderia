@@ -1,0 +1,54 @@
+<header class="header">
+  <div class="header-left">
+    <button class="menu-toggle" (click)="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="logo">
+      <span class="logo-text">Panadería El Buen Sabor</span>
+    </div>
+  </div>
+
+  <div class="header-center">
+    <app-search-bar
+      [placeholder]="'Buscar en el sistema...'"
+      [(searchValue)]="searchQuery"
+      (search)="onSearch()">
+    </app-search-bar>
+  </div>
+
+    <!-- Perfil y Configuración -->
+    <div class="header-item user-dropdown">
+      <button class="user-btn" (click)="toggleUserMenu($event)">
+        <div class="user-avatar">
+          <img [src]="getUserAvatar()" [alt]="usuario?.nombre">
+        </div>
+        <span class="user-name">{{ usuario?.nombre }}</span>
+        <i class="fas fa-chevron-down"></i>
+      </button>
+
+      <div class="dropdown-menu user-menu" [class.show]="showUserMenu">
+        <div class="dropdown-header user-info">
+          <div class="user-avatar-large">
+            <img [src]="getUserAvatar()" [alt]="usuario?.nombre">
+          </div>
+          <div class="user-details">
+            <div class="user-name-large">{{ usuario?.nombre }}</div>
+            <div class="user-role">{{ getRoleName(usuario?.rol) }}</div>
+            <div class="user-email">{{ usuario?.email }}</div>
+          </div>
+        </div>
+
+        <div class="dropdown-body">
+          <a class="dropdown-item" routerLink="/utilidades" [class.disabled]="!tienePermiso('Configuración')" [title]="!tienePermiso('Configuración') ? 'No tienes permiso para acceder a esta sección' : ''">
+            <i class="fas fa-cog"></i>
+            <span>Configuración</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item" (click)="cerrarSesion()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Cerrar Sesión</span>
+          </button>
+        </div>
+      </div>
+    </div>
+</header>

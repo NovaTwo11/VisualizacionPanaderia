@@ -1,0 +1,291 @@
+<div class="pedidos-container">
+  <div class="page-header">
+    <div class="page-title">
+      <h2>Gestión de Pedidos</h2>
+      <p>Administre los pedidos de la panadería</p>
+    </div>
+
+    <div class="page-actions">
+      <button class="btn btn-primary" (click)="toggleFormMode('crear')">
+        <span>➕</span> Nuevo Pedido
+      </button>
+    </div>
+  </div>
+
+  <!-- Formulario para crear/editar pedido -->
+  <div class="form-container" *ngIf="formMode !== 'oculto'" [@formAnimation]>
+    <div class="card">
+      <div class="card-header">
+        <h3>{{ formMode === 'crear' ? 'Crear Nuevo Pedido' : 'Editar Pedido' }}</h3>
+        <button class="btn-close" (click)="toggleFormMode('oculto')">✕</button>
+      </div>
+
+      <div class="card-body">
+        <form [formGroup]="pedidoForm" (ngSubmit)="guardarPedido()">
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label class="form-label" for="clienteId">Cliente</label>
+                <select id="clienteId" formControlName="clienteId" class="form-control"
+                        [class.is-invalid]="submitted && f['clienteId'].errors">
+                  <option value="">Seleccione un cliente</option>
+                  <option *ngFor="let cliente of clientes" [value]="cliente.id">
+                    {{ cliente.nombre }} {{ cliente.apellido }}
+                  </option>
+                </select>
+                <div class="invalid-feedback" *ngIf="submitted && f['clienteId'].errors">
+                  El cliente es requerido
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="form-group">
+                <label class="form-label" for="estado">Estado</label>
+                <select id="estado" formControlName="estado" class="form-control"
+                        [class.is-invalid]="submitted && f['estado'].errors">
+                  <option value="pendiente">Pendiente</option>
+                  <option value="en preparación">En preparación</option>
+                  <option value="en camino">En camino</option>
+                  <option value="entregado">Entregado</option>
+                  <option value="cancelado">Cancelado</option>
+                </select>
+                <div class="invalid-feedback" *ngIf="submitted && f['estado']?.errors">
+                  El estado es requerido
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="direccionEntrega">Dirección de Entrega</label>
+            <input type="text" id="direccionEntrega" formControlName="direccionEntrega" class="form-control"
+                   [class.is-invalid]="submitted && f['direccionEntrega'].errors">
+            <div class="invalid-feedback" *ngIf="submitted && f['direccionEntrega']?.errors">
+              La dirección de entrega es requerida
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label class="form-label" for="metodoPago">Método de Pago</label>
+                <select id="metodoPago" formControlName="metodoPago" class="form-control"
+                        [class.is-invalid]="submitted && f['metodoPago'].errors">
+                  <option value="">Seleccione un método de pago</option>
+                  <option value="Efectivo">Efectivo</option>
+                  <option value="Tarjeta">Tarjeta</option>
+                  <option value="Tarjeta de crédito">Tarjeta de Crédito</option>
+                  <option value="Aplicación móvil">Aplicación Móvil</option>
+                  <option value="Transferencia">Transferencia</option>
+                </select>
+                <div class="invalid-feedback" *ngIf="submitted && f['metodoPago']?.errors">
+                  El método de pago es requerido
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="form-group">
+                <label class="form-label" for="repartidorId">Repartidor</label>
+                <select id="repartidorId" formControlName="repartidorId" class="form-control">
+                  <option value="">Sin asignar</option>
+                  <option *ngFor="let repartidor of repartidores" [value]="repartidor.id">
+                    {{ repartidor.nombre }} {{ repartidor.apellido }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="notas">Notas</label>
+            <textarea id="notas" formControlName="notas" class="form-control" rows="2"></textarea>
+          </div>
+
+          <div class="productos-pedido">
+            <h4>Productos</h4>
+
+            <div class="productos-seleccionados">
+              <div formArrayName="productos">
+                <div *ngFor="let producto of productosFormArray.controls; let i = index" [formGroupName]="i" class="producto-item">
+                  <div class="row">
+                    <div class="col-5">
+                      <div class="form-group">
+                        <label class="form-label" [for]="'productoId-' + i">Producto</label>
+                        <select [id]="'productoId-' + i" formControlName="productoId" class="form-control"
+                                [class.is-invalid]="submitted && producto.get('productoId')?.errors" (change)="onProductoChange(i)">
+                          <option value="">Seleccione un producto</option>
+                          <option *ngFor="let prod of productos" [value]="prod.id">
+                            {{ prod.nombre }} - ${{ prod.precio.toFixed(2) }}
+                          </option>
+                        </select>
+                        <div class="invalid-feedback" *ngIf="submitted && producto.get('productoId')?.errors">
+                          El producto es requerido
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label class="form-label" [for]="'cantidad-' + i">Cantidad</label>
+                        <input type="number" [id]="'cantidad-' + i" formControlName="cantidad" class="form-control" min="1"
+                               [class.is-invalid]="submitted && producto.get('cantidad')?.errors" (change)="calcularSubtotal(i)">
+                        <div class="invalid-feedback" *ngIf="submitted && producto.get('cantidad')?.errors">
+                          <span *ngIf="producto.get('cantidad')?.errors?.['required']">La cantidad es requerida</span>
+                          <span *ngIf="producto.get('cantidad')?.errors?.['min']">La cantidad debe ser mayor a 0</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label class="form-label" [for]="'subtotal-' + i">Subtotal</label>
+                        <input type="text" [id]="'subtotal-' + i" formControlName="subtotal" class="form-control" readonly>
+                      </div>
+                    </div>
+
+                    <div class="col-1">
+                      <button type="button" class="btn-icon remove-producto" title="Eliminar producto" (click)="eliminarProducto(i)">
+                        🗑️
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button type="button" class="btn btn-sm btn-outline add-producto" (click)="agregarProducto()">
+                <span>➕</span> Agregar Producto
+              </button>
+            </div>
+          </div>
+
+          <div class="pedido-total">
+            <h4>Total: ${{ calcularTotal().toFixed(2) }}</h4>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" (click)="toggleFormMode('oculto')">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Listado de pedidos -->
+  <div class="pedidos-list">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <h3>Listado de Pedidos</h3>
+        </div>
+
+        <div class="card-filters">
+          <div class="search-box">
+            <input type="text" placeholder="Buscar pedido..." class="search-input" [(ngModel)]="searchTerm" (input)="onSearchChange()">
+            <button class="search-button">🔍</button>
+          </div>
+
+          <select class="form-control filter-select" [(ngModel)]="filtroEstado" (change)="filtrarPedidos()">
+            <option value="todos">Todos los estados</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="en preparación">En preparación</option>
+            <option value="en camino">En camino</option>
+            <option value="entregado">Entregado</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div *ngIf="loading" class="loading-container">
+          <div class="loader"></div>
+          <p>Cargando pedidos...</p>
+        </div>
+
+        <div *ngIf="error" class="error-container">
+          <p>{{ error }}</p>
+          <button class="btn btn-primary" (click)="getPedidos()">Reintentar</button>
+        </div>
+
+        <div *ngIf="!loading && !error" class="pedidos-grid">
+          <div class="pedido-card" *ngFor="let pedido of filteredPedidos">
+            <div class="pedido-header">
+              <div class="pedido-id">Pedido #{{ pedido.id }}</div>
+              <div class="pedido-fecha"> {{ pedido.fecha | date:'dd/MM/yyyy HH:mm':'-10:00' }}</div>
+              <div class="pedido-badge" [ngClass]="'estado-' + pedido.estado.replace(' ', '-')">
+                {{ pedido.estado }}
+              </div>
+            </div>
+
+            <div class="pedido-content">
+              <div class="pedido-cliente">
+                <strong>Cliente:</strong> {{ pedido.clienteNombre }}
+              </div>
+
+              <div class="pedido-direccion">
+                <strong>Dirección:</strong> {{ pedido.direccionEntrega }}
+              </div>
+
+              <div class="pedido-repartidor" *ngIf="pedido.repartidorNombre">
+                <strong>Repartidor:</strong> {{ pedido.repartidorNombre }}
+              </div>
+
+              <div class="pedido-productos">
+                <strong>Productos:</strong>
+                <ul>
+                  <li *ngFor="let producto of pedido.productos">
+                    {{ producto.nombre }} x {{ producto.cantidad }} = ${{ producto.subtotal.toFixed(2) }}
+                  </li>
+                </ul>
+              </div>
+
+              <div class="pedido-metodo-pago">
+                <strong>Método de pago:</strong> {{ pedido.metodoPago }}
+              </div>
+
+              <div class="pedido-notas" *ngIf="pedido.notas">
+                <strong>Notas:</strong> {{ pedido.notas }}
+              </div>
+            </div>
+
+            <div class="pedido-footer">
+              <div class="pedido-total">
+                <strong>Total:</strong> ${{ pedido.total.toFixed(2) }}
+              </div>
+
+              <div class="pedido-actions">
+                <button class="btn btn-sm btn-outline" (click)="editarPedido(pedido)">Editar</button>
+                <button class="btn btn-sm btn-danger" (click)="confirmarEliminar(pedido)">Eliminar</button>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="filteredPedidos.length === 0" class="no-results">
+            <p>No se encontraron pedidos</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de confirmación para eliminar -->
+  <div class="modal" *ngIf="showDeleteModal">
+    <div class="modal-backdrop" (click)="showDeleteModal = false"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Confirmar Eliminación</h3>
+        <button class="btn-close" (click)="showDeleteModal = false">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>¿Está seguro que desea eliminar el pedido <strong>#{{ pedidoSeleccionado?.id }}</strong>?</p>
+        <p>Esta acción no se puede deshacer.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" (click)="showDeleteModal = false">Cancelar</button>
+        <button class="btn btn-danger" (click)="eliminarPedido()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>

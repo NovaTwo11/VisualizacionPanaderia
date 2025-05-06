@@ -1,0 +1,93 @@
+<div class="home-container">
+  <div class="welcome-section">
+    <div class="welcome-card">
+      <h2>Bienvenido a la Panadería</h2>
+      <p>Sistema de gestión para administrar todos los aspectos de su negocio.</p>
+    </div>
+  </div>
+
+  <div class="dashboard-summary">
+    <div class="row">
+      <div class="summary-card">
+        <div class="summary-icon">🍞</div>
+        <div class="summary-content">
+          <h3>{{ summaryData.productos }}</h3>
+          <p>Productos</p>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-icon">👥</div>
+        <div class="summary-content">
+          <h3>{{ summaryData.clientes }}</h3>
+          <p>Clientes</p>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-icon">🛒</div>
+        <div class="summary-content">
+          <h3>{{ summaryData.pedidosHoy }}</h3>
+          <p>Pedidos Hoy</p>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-icon">💰</div>
+        <div class="summary-content">
+          <h3>${{ summaryData.ventasMensuales }}</h3>
+          <p>Ventas Mensuales</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quick-access-section">
+    <h2>Accesos Rápidos</h2>
+    <div class="row">
+      <div class="quick-access-card" *ngFor="let item of quickAccess" (click)="navigateTo(item.route)">
+        <div class="quick-access-icon">{{ item.icon }}</div>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.description }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="recent-activity">
+    <h2>Actividad Reciente</h2>
+    <div class="activity-timeline">
+      <div class="activity-item">
+        <div class="activity-time">10:30 AM</div>
+        <div class="activity-content">
+          <div class="activity-icon">🛒</div>
+          <div class="activity-text">
+            <h4>Nuevo Pedido</h4>
+            <p>Cliente: Ana Martínez - Total: $45.75</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="activity-item">
+        <div class="activity-time">09:15 AM</div>
+        <div class="activity-content">
+          <div class="activity-icon">🍞</div>
+          <div class="activity-text">
+            <h4>Stock Actualizado</h4>
+            <p>Producto: Pan Francés - Nuevo stock: 45 unidades</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="activity-item">
+        <div class="activity-time">Ayer</div>
+        <div class="activity-content">
+          <div class="activity-icon">👥</div>
+          <div class="activity-text">
+            <h4>Nuevo Cliente</h4>
+            <p>Se registró: Carlos Rodríguez</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

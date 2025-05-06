@@ -1,0 +1,80 @@
+.reporte-productos-container {
+  width: 100%;
+}
+
+.actions-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.filter-container {
+  width: 200px;
+  margin-right: 10px;
+}
+
+.card {
+  margin-bottom: 20px;
+}
+
+.card h3 {
+  margin-bottom: 15px;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  margin-bottom: 20px;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+}
+
+.chart-container {
+  height: 500px;
+  margin-top: 20px;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  padding: 15px;
+  background-color: #fff;
+}
+
+.chart-placeholder {
+  text-align: center;
+  padding: 20px;
+  color: #6c757d;
+}
+
+.product-list {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+  color: #6c757d;
+}
+
+.error {
+  color: #dc3545;
+  padding: 10px;
+  border: 1px solid #dc3545;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .actions-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filter-container {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
