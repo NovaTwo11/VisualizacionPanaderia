@@ -49,15 +49,45 @@ export class RepartidoresComponent implements OnInit {
   ) {
     this.repartidorForm = this.formBuilder.group({
       id: [null],
-      nombre: ['', Validators.required],
-      apellido: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      telefono: ['', Validators.required],
+      nombre: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.pattern(/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/)
+        ]
+      ],
+      apellido: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.pattern(/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/)
+        ]
+      ],
+      email: [
+        '',
+        [
+          Validators.required,
+          Validators.email,
+          // opcional: refuerzo de patrón
+          Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/)
+        ]
+      ],
+      telefono: [
+        '',
+        [
+          Validators.required,
+          // aquí asume de 7 a 10 dígitos numéricos
+          Validators.pattern(/^[0-9]{7,10}$/)
+        ]
+      ],
       vehiculo: ['', Validators.required],
       licencia: ['', Validators.required],
       disponible: [true],
       pedidosEntregados: [0]
     });
+
   }
 
   ngOnInit(): void {

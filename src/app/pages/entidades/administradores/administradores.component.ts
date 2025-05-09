@@ -31,25 +31,6 @@ export class AdministradoresComponent implements OnInit {
   loading: boolean = true;
   error: string | null = null;
 
-  permisosDisponibles: string[] = [
-    'Administradores',
-    'Clientes',
-    'Productos',
-    'Repartidores',
-    'Pedidos',
-    'Reportes',
-    'Configuración',
-    'Exportar Datos',
-    'Importar Datos',
-    'Crear Backups',
-    'Restaurar Backups',
-    'Gestionar Usuarios',
-    'Ver Estadísticas',
-    'Modificar Precios',
-    'Gestionar Stock',
-    'Cancelar Pedidos'
-  ];
-
   // Formulario
   adminForm: FormGroup;
   formMode: 'crear' | 'editar' | 'oculto' = 'oculto';
@@ -68,11 +49,26 @@ export class AdministradoresComponent implements OnInit {
   ) {
     this.adminForm = this.formBuilder.group({
       id: [null],
-      nombre: ['', Validators.required],
-      apellido: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
-      telefono: ['', Validators.required],
+      nombre: ['', [
+        Validators.required,
+        Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$')
+      ]],
+      apellido: ['', [
+        Validators.required,
+        Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$')
+      ]],
+      email: ['', [
+        Validators.required,
+        Validators.email
+      ]],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(6)
+      ]],
+      telefono: ['', [
+        Validators.required,
+        Validators.pattern('^[0-9]{7,10}$')
+      ]],
       rol: ['', Validators.required],
       activo: [true]
     });

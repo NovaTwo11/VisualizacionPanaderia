@@ -48,27 +48,28 @@ export interface Reporte {
 }
 
 export interface ReporteDetalle {
-  // Ventas | GENERAL
-  metodoPago?: string;
+  // POR_CLIENTE
+  clienteId?: number;
+  nombreCliente?: string;
+  totalUnidades?: number;
+  productosComprados?: { nombre: string; cantidad: number }[];
+
+  // POR_PRODUCTO
+  productoId?: number;
+  nombreProducto?: string;
+  cantidadVendida?: number;
+  stock?: number;
+  precioUnitario?: number;
+  categoria?: string;
+
+  // GENERAL
+  unidadesVendidasTotales?: number;
   totalGenerado?: number;
   numeroPedidos?: number;
   ticketPromedio?: number;
-
-  // Productos | GENERAL
-  categoria?: string;
-  unidadesVendidasTotales?: number;
-
-  // POR_PRODUCTO
-  nombreProducto?: string;
-  stock?: number;           // coincide con tu DTO `stock`
-  precioUnitario?: number;
-  cantidadVendida?: number;
-
-  // POR_CLIENTE
-  nombreCliente?: string;
-  totalUnidades?: number;   // si usas otro campo para esto
-  productosComprados?: ProductoComprado[];
+  metodoPago?: string;
 }
+
 
 export interface Repartidor {
   id?: number;

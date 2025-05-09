@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { ReporteService } from '../../../services/reporte.service';
 import { Chart, registerables } from 'chart.js';
 import { Subscription } from 'rxjs';
+import autoTable from 'jspdf-autotable';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { ReporteDetalle } from '../../../models/models';
@@ -198,37 +199,41 @@ export class ReporteProductosComponent
   }
 
   exportarReporte(): void {
-    const doc = new jsPDF('p', 'mm', 'a4');
-    const title = `Reporte de Productos (${this.filtroTipoReporte})`;
-    const fecha = `Período: ${this.periodoInicio} → ${this.periodoFin}`;
+    const doc      = new jsPDF('p','mm','a4')
+    const title    = `Reporte de Productos (${this.filtroTipoReporte})`
+    const fecha    = `Período: ${this.periodoInicio || '—'} → ${this.periodoFin || '—'}`
 
-    doc.setFontSize(18);
-    doc.text(title, 14, 20);
-    doc.setFontSize(11);
-    doc.text(fecha, 14, 28);
+    // 1) Encabezado
+    doc.setFontSize(18)
+    doc.text(title, 14, 20)
+    doc.setFontSize(11)
+    doc.text(fecha, 14, 28)
 
-    const tabla = document.querySelector('#tablaProductos') as HTMLElement;
-    html2canvas(tabla, { scale: 2 }).then(canvas1 => {
-      const imgData1 = canvas1.toDataURL('image/png');
-      const imgProps1 = (doc as any).getImageProperties(imgData1);
-      const pdfWidth = doc.internal.pageSize.getWidth() - 28;
-      const pdfHeight = (imgProps1.height * pdfWidth) / imgProps1.width;
-      doc.addImage(imgData1, 'PNG', 14, 40, pdfWidth, pdfHeight);
+    // 2) Auto-table a partir del elemento DOM #tablaProductos
+    autoTable(doc, {
+      html: '#tablaProductos',
+      startY: 35,
+      margin: { left: 14, right: 14 },
+      styles: { fontSize: 8, cellPadding: 2 },
+      headStyles: { fillColor: [220,220,220] },
+    })
 
-      html2canvas(this.productosCanvas.nativeElement, { scale: 2 }).then(canvas2 => {
-        const yAfterTable = 40 + pdfHeight + 10;
-        const imgData2 = canvas2.toDataURL('image/png');
-        const imgProps2 = (doc as any).getImageProperties(imgData2);
-        const chartHeight = (imgProps2.height * pdfWidth) / imgProps2.width;
-        if (yAfterTable + chartHeight > doc.internal.pageSize.getHeight() - 20) {
-          doc.addPage();
-          doc.addImage(imgData2, 'PNG', 14, 20, pdfWidth, chartHeight);
-        } else {
-          doc.addImage(imgData2, 'PNG', 14, yAfterTable, pdfWidth, chartHeight);
-        }
-        doc.save(`reporte-productos-${Date.now()}.pdf`);
-      });
-    });
+    // 3) Gráfico
+    const pdfW      = doc.internal.pageSize.getWidth() - 28
+    const tableEndY = (doc as any).lastAutoTable.finalY + 10
+
+    html2canvas(this.productosCanvas.nativeElement, { scale: 2 })
+      .then(canvas => {
+        const imgData = canvas.toDataURL('image/png')
+        const props   = (doc as any).getImageProperties(imgData)
+        const h       = (props.height * pdfW) / props.width
+        const y       = tableEndY + h > doc.internal.pageSize.getHeight() - 20
+          ? (doc.addPage(), 20)
+          : tableEndY
+
+        doc.addImage(imgData, 'PNG', 14, y, pdfW, h)
+        doc.save(`reporte-productos-${Date.now()}.pdf`)
+      })
   }
 
 }

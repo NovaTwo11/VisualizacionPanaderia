@@ -244,45 +244,40 @@ export class ReporteVentasComponent implements OnInit, OnDestroy {
   }
 
   exportarReporte(): void {
-    // 1. Creamos el documento
-    const doc = new jsPDF('p', 'mm', 'a4');
-    const title = `Reporte de Ventas (${this.filtroTipoReporte})`;
-    const fecha = `Período: ${this.periodoInicio} → ${this.periodoFin}`;
-    const metodo = this.filtroTipoReporte==='GENERAL'
-      ? `Método Pago: ${this.filtroMetodoPago}` : '';
+    const doc = new jsPDF('p','mm','a4');
+    const title  = `Reporte de Ventas (${this.filtroTipoReporte})`;
+    const fecha  = `Período: ${this.periodoInicio || '—'} → ${this.periodoFin || '—'}`;
+    const metodo = this.filtroTipoReporte === 'GENERAL'
+      ? `Método Pago: ${this.filtroMetodoPago}`
+      : '';
 
-    // 2. Agregamos encabezados
     doc.setFontSize(18);
     doc.text(title, 14, 20);
     doc.setFontSize(11);
     doc.text(fecha, 14, 28);
     if (metodo) doc.text(metodo, 14, 34);
 
-    // 3. Tomamos captura de la tabla HTML
-    const tabla = document.querySelector('#tablaVentas') as HTMLElement;
-    html2canvas(tabla, { scale: 2 }).then(canvas1 => {
-      const imgData1 = canvas1.toDataURL('image/png');
-      const imgProps1 = (doc as any).getImageProperties(imgData1);
-      const pdfWidth = doc.internal.pageSize.getWidth() - 28;
-      const pdfHeight = (imgProps1.height * pdfWidth) / imgProps1.width;
-      doc.addImage(imgData1, 'PNG', 14, 40, pdfWidth, pdfHeight);
+    // autoTable
+    autoTable(doc, {
+      startY: 38,
+      html: '#tablaVentas',      // o define head/body igual que antes
+      styles: { fontSize: 8 },
+      margin: { left: 14, right: 14 }
+    });
 
-      // 4. Luego agregamos la gráfica
-      html2canvas(this.ventasCanvas.nativeElement, { scale: 2 }).then(canvas2 => {
-        const yAfterTable = 40 + pdfHeight + 10;
-        const imgData2 = canvas2.toDataURL('image/png');
-        const imgProps2 = (doc as any).getImageProperties(imgData2);
-        const chartHeight = (imgProps2.height * pdfWidth) / imgProps2.width;
-        // Si se pasa del final de la página, creamos nueva página
-        if (yAfterTable + chartHeight > doc.internal.pageSize.getHeight() - 20) {
-          doc.addPage();
-          doc.addImage(imgData2, 'PNG', 14, 20, pdfWidth, chartHeight);
-        } else {
-          doc.addImage(imgData2, 'PNG', 14, yAfterTable, pdfWidth, chartHeight);
-        }
-        // 5. Guardar el PDF
-        doc.save(`reporte-ventas-${Date.now()}.pdf`);
-      });
+    const pdfWidth  = doc.internal.pageSize.getWidth() - 28;
+    const tableEndY = (doc as any).lastAutoTable.finalY + 10;
+    html2canvas(this.ventasCanvas.nativeElement, { scale: 2 }).then(canvas => {
+      const imgData = canvas.toDataURL('image/png');
+      const props   = (doc as any).getImageProperties(imgData);
+      const h       = (props.height * pdfWidth) / props.width;
+      if (tableEndY + h > doc.internal.pageSize.getHeight() - 20) {
+        doc.addPage();
+        doc.addImage(imgData, 'PNG', 14, 20, pdfWidth, h);
+      } else {
+        doc.addImage(imgData, 'PNG', 14, tableEndY, pdfWidth, h);
+      }
+      doc.save(`reporte-ventas-${Date.now()}.pdf`);
     });
   }
 

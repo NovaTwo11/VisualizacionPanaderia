@@ -28,7 +28,8 @@
                        class="form-control"
                        [class.is-invalid]="submitted && f['nombre'].errors">
                 <div class="invalid-feedback" *ngIf="submitted && f['nombre'].errors">
-                  El nombre es requerido
+                  <span *ngIf="f['nombre'].errors?.['required']">El nombre es requerido.</span>
+                  <span *ngIf="f['nombre'].errors?.['pattern']">Solo letras y espacios.</span>
                 </div>
               </div>
             </div>
@@ -39,7 +40,8 @@
                        class="form-control"
                        [class.is-invalid]="submitted && f['apellido'].errors">
                 <div class="invalid-feedback" *ngIf="submitted && f['apellido'].errors">
-                  El apellido es requerido
+                  <span *ngIf="f['apellido'].errors?.['required']">El apellido es requerido.</span>
+                  <span *ngIf="f['apellido'].errors?.['pattern']">Solo letras y espacios.</span>
                 </div>
               </div>
             </div>
@@ -53,8 +55,8 @@
                        class="form-control"
                        [class.is-invalid]="submitted && f['email'].errors">
                 <div class="invalid-feedback" *ngIf="submitted && f['email'].errors">
-                  <span *ngIf="f['email'].errors?.['required']">El email es requerido</span>
-                  <span *ngIf="f['email'].errors?.['email']">Ingrese un email válido</span>
+                  <span *ngIf="f['email'].errors?.['required']">El email es requerido.</span>
+                  <span *ngIf="f['email'].errors?.['email']">Ingrese un email válido.</span>
                 </div>
               </div>
             </div>
@@ -65,7 +67,8 @@
                        class="form-control"
                        [class.is-invalid]="submitted && f['telefono'].errors">
                 <div class="invalid-feedback" *ngIf="submitted && f['telefono'].errors">
-                  El teléfono es requerido
+                  <span *ngIf="f['telefono'].errors?.['required']">El teléfono es requerido.</span>
+                  <span *ngIf="f['telefono'].errors?.['pattern']">Solo números (7–10 dígitos).</span>
                 </div>
               </div>
             </div>
@@ -73,27 +76,16 @@
 
           <div class="row">
             <div class="col">
-              <div class="form-group">
-                <label for="username" class="form-label">Nombre de Usuario</label>
-                <input type="text" id="username" formControlName="username"
-                       class="form-control"
-                       [attr.disabled]="formMode === 'editar' ? true : null"
-                       [class.is-invalid]="submitted && f['username'].errors">
-                <div class="invalid-feedback" *ngIf="submitted && f['username'].errors">
-                  El nombre de usuario es requerido
-                </div>
-                <small class="text-muted" *ngIf="formMode === 'editar'">El nombre de usuario no puede ser modificado</small>
-              </div>
-            </div>
-            <div class="col">
               <div class="form-group" *ngIf="formMode === 'crear'">
                 <label for="password" class="form-label">Contraseña</label>
                 <input type="password" id="password" formControlName="password"
                        class="form-control"
                        [class.is-invalid]="submitted && f['password'].errors">
                 <div class="invalid-feedback" *ngIf="submitted && f['password'].errors">
-                  <span *ngIf="f['password'].errors?.['required']">La contraseña es requerida</span>
-                  <span *ngIf="f['password'].errors?.['minlength']">La contraseña debe tener al menos 6 caracteres</span>
+                  <span *ngIf="f['password'].errors?.['required']">La contraseña es requerida.</span>
+                  <span *ngIf="f['password'].errors?.['minlength']">
+                    Debe tener al menos 6 caracteres.
+                  </span>
                 </div>
               </div>
               <div class="form-group" *ngIf="formMode === 'editar'">
@@ -112,7 +104,7 @@
               <option value="Operador">Operador</option>
             </select>
             <div class="invalid-feedback" *ngIf="submitted && f['rol'].errors">
-              El rol es requerido
+              <span *ngIf="f['rol'].errors?.['required']">El rol es requerido.</span>
             </div>
           </div>
 

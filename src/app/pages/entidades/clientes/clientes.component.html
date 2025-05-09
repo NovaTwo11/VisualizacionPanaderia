@@ -28,7 +28,8 @@
                        class="form-control"
                        [class.is-invalid]="submitted && f['nombre'].errors">
                 <div class="invalid-feedback" *ngIf="submitted && f['nombre'].errors">
-                  El nombre es requerido
+                  <span *ngIf="f['nombre'].errors?.['required']">El nombre es requerido.</span>
+                  <span *ngIf="f['nombre'].errors?.['pattern']">No puede contener números ni caracteres especiales.</span>
                 </div>
               </div>
             </div>
@@ -65,7 +66,8 @@
                        class="form-control"
                        [class.is-invalid]="submitted && f['telefono'].errors">
                 <div class="invalid-feedback" *ngIf="submitted && f['telefono'].errors">
-                  El teléfono es requerido
+                  <span *ngIf="f['telefono'].errors?.['required']">El teléfono es requerido.</span>
+                  <span *ngIf="f['telefono'].errors?.['pattern']">Solo números (7–10 dígitos).</span>
                 </div>
               </div>
             </div>

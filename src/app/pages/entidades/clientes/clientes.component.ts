@@ -49,10 +49,19 @@ export class ClientesComponent implements OnInit {
   ) {
     this.clienteForm = this.formBuilder.group({
       id: [null],
-      nombre: ['', Validators.required],
-      apellido: ['', Validators.required],
+      nombre: ['', [
+        Validators.required,
+        Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$')
+      ]],
+      apellido: ['', [
+        Validators.required,
+        Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$')
+      ]],
       email: ['', [Validators.required, Validators.email]],
-      telefono: ['', Validators.required],
+      telefono: ['', [
+        Validators.required,
+        Validators.pattern('^[0-9]{7,10}$')
+      ]],
       direccion: ['', Validators.required],
       activo: [true]
     });

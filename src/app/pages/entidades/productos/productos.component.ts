@@ -52,11 +52,23 @@ export class ProductosComponent implements OnInit {
   ) {
     this.productoForm = this.formBuilder.group({
       id: [null],
-      nombre: ['', Validators.required],
-      descripcion: ['', Validators.required],
-      precio: [0, [Validators.required, Validators.min(0.01)]],
+      nombre: ['', [
+        Validators.required,
+        Validators.pattern('^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$')
+      ]],
+      descripcion: ['', [
+        Validators.required,
+        Validators.minLength(5)
+      ]],
+      precio: [0, [
+        Validators.required,
+        Validators.min(0.01)
+      ]],
       categoria: ['', Validators.required],
-      stock: [0, [Validators.required, Validators.min(0)]],
+      stock: [0, [
+        Validators.required,
+        Validators.min(0)
+      ]],
       imagen: [''],
       disponible: [true]
     });
@@ -80,6 +92,7 @@ export class ProductosComponent implements OnInit {
         this.categorias = Array.from(new Set(productos.map(p => p.categoria)));
         this.loading = false;
         this.cargarImagenes();
+        console.log('Productos con stock:', this.productos);
       },
       error: (err) => {
         console.error('Error al cargar productos', err);

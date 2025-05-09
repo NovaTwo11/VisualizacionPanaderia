@@ -24,22 +24,47 @@
             <div class="col">
               <div class="form-group">
                 <label for="nombre" class="form-label">Nombre</label>
-                <input type="text" id="nombre" formControlName="nombre"
-                       class="form-control"
-                       [class.is-invalid]="submitted && f['nombre'].errors">
+                <input
+                  type="text"
+                  id="nombre"
+                  formControlName="nombre"
+                  class="form-control"
+                  [class.is-invalid]="submitted && f['nombre'].invalid"
+                />
                 <div class="invalid-feedback" *ngIf="submitted && f['nombre'].errors">
-                  El nombre es requerido
+            <span *ngIf="f['nombre'].errors?.['required']">
+              El nombre es requerido
+            </span>
+                  <span *ngIf="f['nombre'].errors?.['minlength']">
+              El nombre debe tener al menos 3 caracteres
+            </span>
+                  <span *ngIf="f['nombre'].errors?.['pattern']">
+              El nombre solo puede contener letras y espacios
+            </span>
                 </div>
               </div>
             </div>
+
             <div class="col">
               <div class="form-group">
                 <label for="apellido" class="form-label">Apellido</label>
-                <input type="text" id="apellido" formControlName="apellido"
-                       class="form-control"
-                       [class.is-invalid]="submitted && f['apellido'].errors">
+                <input
+                  type="text"
+                  id="apellido"
+                  formControlName="apellido"
+                  class="form-control"
+                  [class.is-invalid]="submitted && f['apellido'].invalid"
+                />
                 <div class="invalid-feedback" *ngIf="submitted && f['apellido'].errors">
-                  El apellido es requerido
+            <span *ngIf="f['apellido'].errors?.['required']">
+              El apellido es requerido
+            </span>
+                  <span *ngIf="f['apellido'].errors?.['minlength']">
+              El apellido debe tener al menos 3 caracteres
+            </span>
+                  <span *ngIf="f['apellido'].errors?.['pattern']">
+              El apellido solo puede contener letras y espacios
+            </span>
                 </div>
               </div>
             </div>
@@ -49,23 +74,44 @@
             <div class="col">
               <div class="form-group">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" id="email" formControlName="email"
-                       class="form-control"
-                       [class.is-invalid]="submitted && f['email'].errors">
+                <input
+                  type="email"
+                  id="email"
+                  formControlName="email"
+                  class="form-control"
+                  [class.is-invalid]="submitted && f['email'].invalid"
+                />
                 <div class="invalid-feedback" *ngIf="submitted && f['email'].errors">
-                  <span *ngIf="f['email'].errors?.['required']">El email es requerido</span>
-                  <span *ngIf="f['email'].errors?.['email']">Ingrese un email válido</span>
+            <span *ngIf="f['email'].errors?.['required']">
+              El email es requerido
+            </span>
+                  <span *ngIf="f['email'].errors?.['email']">
+              Ingrese un email válido
+            </span>
+                  <span *ngIf="f['email'].errors?.['pattern']">
+              Formato de correo incorrecto
+            </span>
                 </div>
               </div>
             </div>
+
             <div class="col">
               <div class="form-group">
                 <label for="telefono" class="form-label">Teléfono</label>
-                <input type="text" id="telefono" formControlName="telefono"
-                       class="form-control"
-                       [class.is-invalid]="submitted && f['telefono'].errors">
+                <input
+                  type="text"
+                  id="telefono"
+                  formControlName="telefono"
+                  class="form-control"
+                  [class.is-invalid]="submitted && f['telefono'].invalid"
+                />
                 <div class="invalid-feedback" *ngIf="submitted && f['telefono'].errors">
-                  El teléfono es requerido
+            <span *ngIf="f['telefono'].errors?.['required']">
+              El teléfono es requerido
+            </span>
+                  <span *ngIf="f['telefono'].errors?.['pattern']">
+              El teléfono debe ser de 7 a 10 dígitos numéricos
+            </span>
                 </div>
               </div>
             </div>
@@ -74,20 +120,13 @@
           <div class="row">
             <div class="col">
               <div class="form-group">
-                <label for="dni" class="form-label">DNI</label>
-                <input type="text" id="dni" formControlName="dni"
-                       class="form-control"
-                       [class.is-invalid]="submitted && f['dni'].errors">
-                <div class="invalid-feedback" *ngIf="submitted && f['dni'].errors">
-                  El DNI es requerido
-                </div>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-group">
                 <label for="vehiculo" class="form-label">Vehículo</label>
-                <select id="vehiculo" formControlName="vehiculo" class="form-control"
-                        [class.is-invalid]="submitted && f['vehiculo'].errors">
+                <select
+                  id="vehiculo"
+                  formControlName="vehiculo"
+                  class="form-control"
+                  [class.is-invalid]="submitted && f['vehiculo'].invalid"
+                >
                   <option value="">Seleccione un vehículo</option>
                   <option value="Moto">Moto</option>
                   <option value="Bicicleta">Bicicleta</option>
@@ -99,44 +138,20 @@
                 </div>
               </div>
             </div>
-          </div>
 
-          <div class="form-group">
-            <label for="direccion" class="form-label">Dirección</label>
-            <input type="text" id="direccion" formControlName="direccion"
-                   class="form-control"
-                   [class.is-invalid]="submitted && f['direccion'].errors">
-            <div class="invalid-feedback" *ngIf="submitted && f['direccion'].errors">
-              La dirección es requerida
-            </div>
-          </div>
-
-          <div class="row">
             <div class="col">
               <div class="form-group">
-                <label for="estado" class="form-label">Estado</label>
-                <select id="estado" formControlName="estado" class="form-control"
-                        [class.is-invalid]="submitted && f['estado'].errors">
-                  <option value="Activo">Activo</option>
-                  <option value="Inactivo">Inactivo</option>
-                  <option value="En entrega">En entrega</option>
-                </select>
-                <div class="invalid-feedback" *ngIf="submitted && f['estado'].errors">
-                  El estado es requerido
+                <label for="licencia" class="form-label">Licencia</label>
+                <input
+                  type="text"
+                  id="licencia"
+                  formControlName="licencia"
+                  class="form-control"
+                  [class.is-invalid]="submitted && f['licencia'].invalid"
+                />
+                <div class="invalid-feedback" *ngIf="submitted && f['licencia'].errors">
+                  La licencia es requerida
                 </div>
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-group">
-                <label for="zonaAsignada" class="form-label">Zona Asignada</label>
-                <select id="zonaAsignada" formControlName="zonaAsignada" class="form-control">
-                  <option value="">Sin asignar</option>
-                  <option value="Norte">Norte</option>
-                  <option value="Sur">Sur</option>
-                  <option value="Este">Este</option>
-                  <option value="Oeste">Oeste</option>
-                  <option value="Centro">Centro</option>
-                </select>
               </div>
             </div>
           </div>

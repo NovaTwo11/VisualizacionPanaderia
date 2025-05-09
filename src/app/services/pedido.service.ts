@@ -1,7 +1,7 @@
 // src/app/services/pedido.service.ts
 import { Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Pedido } from '../models/models';
 import { environment } from '../../environments/environment';
@@ -58,7 +58,7 @@ export class PedidoService {
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.error(`${operation} failed: ${error.message}`);
-      return of(result as T);
+      return throwError(() => error);
     };
   }
 

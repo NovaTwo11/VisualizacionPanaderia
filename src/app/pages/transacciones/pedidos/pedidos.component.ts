@@ -77,9 +77,22 @@ export class PedidosComponent implements OnInit {
     this.getClientes();
     this.getRepartidores();
     this.getProductos();
-
-    // Agregar al menos un producto al iniciar
     this.agregarProducto();
+    this.pedidoForm.get('clienteId')!.valueChanges.subscribe(rawId => {
+      const id = typeof rawId === 'string' ? parseInt(rawId, 10) : rawId;
+      const cliente = this.clientes.find(c => c.id === id);
+      if (cliente) {
+        this.pedidoForm.patchValue({
+          clienteNombre: `${cliente.nombre} ${cliente.apellido}`,
+          direccionEntrega: cliente.direccion
+        });
+      } else {
+        this.pedidoForm.patchValue({
+          clienteNombre: '',
+          direccionEntrega: ''
+        });
+      }
+    });
   }
 
   // Getter para acceder fácilmente a los controles del formulario
@@ -259,60 +272,210 @@ export class PedidosComponent implements OnInit {
   guardarPedido(): void {
     this.submitted = true;
 
-    if (this.pedidoForm.invalid) {
-      return;
-    }
-    const payload = this.pedidoForm.value as any;
+    if (this.isFormInvalid()) return;
+    if (this.hasStockErrors()) return;
 
-    const pedidoData = this.pedidoForm.value;
-
-    // Obtener nombres de cliente y repartidor
-    if (pedidoData.clienteId) {
-      const clienteSeleccionado = this.clientes.find(c => c.id == pedidoData.clienteId);
-      if (clienteSeleccionado) {
-        pedidoData.clienteNombre = `${clienteSeleccionado.nombre} ${clienteSeleccionado.apellido}`;
-      }
-    }
-
-    if (pedidoData.repartidorId) {
-      const repartidorSeleccionado = this.repartidores.find(r => r.id == pedidoData.repartidorId);
-      if (repartidorSeleccionado) {
-        pedidoData.repartidorNombre = `${repartidorSeleccionado.nombre} ${repartidorSeleccionado.apellido}`;
-      }
-    }
+    const payload = this.buildPayload();
 
     if (this.formMode === 'crear') {
-      this.pedidoService.crearPedido(payload)
-        .subscribe({
-          next: (pedido) => {
-            this.pedidos.push(pedido);
-            this.filtrarPedidos();
-            this.toggleFormMode('oculto');
-            // Aquí se podría mostrar un mensaje de éxito
-          },
-          error: (err) => {
-            console.error('Error al crear pedido', err);
-            // Aquí se podría mostrar un mensaje de error
-          }
-        });
+      this.sendCreate(payload);
     } else {
-      this.pedidoService.actualizarPedido(pedidoData)
-        .subscribe({
-          next: (pedido) => {
-            const index = this.pedidos.findIndex(p => p.id === pedido.id);
-            if (index !== -1) {
-              this.pedidos[index] = pedido;
-              this.filtrarPedidos();
-            }
-            this.toggleFormMode('oculto');
-            // Aquí se podría mostrar un mensaje de éxito
-          },
-          error: (err) => {
-            console.error('Error al actualizar pedido', err);
-            // Aquí se podría mostrar un mensaje de error
-          }
-        });
+      this.sendUpdate(payload);
     }
+  }
+
+  /** 1. Valida que el formulario esté correcto */
+  private isFormInvalid(): boolean {
+    if (this.pedidoForm.valid) {
+      return false;
+    }
+
+    // 1.1. Marcar todos los controles como 'touched' y 'dirty'
+    this.markAllControls(this.pedidoForm);
+
+    // 1.2. Opcional: desplazarse al primer campo inválido
+    setTimeout(() => {
+      const firstInvalid: HTMLElement | null = document.querySelector(
+        '.ng-invalid[formControlName]'
+      );
+      firstInvalid?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      firstInvalid?.focus();
+    });
+
+    // 1.3. Opcional: recopilar errores para un resumen
+    const errorSummary: string[] = [];
+    Object.keys(this.pedidoForm.controls).forEach(key => {
+      const control = this.pedidoForm.get(key)!;
+      if (control.invalid) {
+        const errs = control.errors!;
+        Object.keys(errs).forEach(errKey => {
+          errorSummary.push(`${key}: ${errKey}`);
+        });
+      }
+    });
+    console.warn('Errores de validación en el formulario:', errorSummary);
+
+    return true;
+  }
+
+  /** Recorre recursivamente un FormGroup/FormArray y marca sus controles */
+  private markAllControls(formGroup: FormGroup | FormArray): void {
+    Object.values(formGroup.controls).forEach(control => {
+      if (control instanceof FormGroup || control instanceof FormArray) {
+        this.markAllControls(control);
+      } else {
+        control.markAsTouched();
+        control.markAsDirty();
+      }
+    });
+  }
+
+
+  /** 2. Revisa stock y muestra alert si hay problemas */
+  private hasStockErrors(): boolean {
+    const faltantes = this.tieneStockInsuficiente();
+    if (faltantes.length === 0) return false;
+
+    const mensajes = faltantes
+      .map(f => `– ${f.nombre}: solicitó ${f.solicitado}, pero sólo hay ${f.disponible}.`)
+      .join('\n');
+    alert(`No se puede procesar el pedido por falta de stock:\n${mensajes}`);
+    return true;
+  }
+
+  /** 3. Construye el objeto payload, quitando campos de solo lectura y completando nombres */
+  private buildPayload(): any {
+    const raw = { ...this.pedidoForm.value } as any;
+    delete raw.fecha;
+    delete raw.total;
+
+    this.completeClienteFields(raw);
+    this.completeRepartidorFields(raw);
+
+    // Asegura que venga el ID si es actualización
+    if (this.formMode === 'editar') {
+      raw.id = this.pedidoForm.value.id;
+    }
+
+    return raw;
+  }
+
+  private completeClienteFields(raw: any): void {
+    if (!raw.clienteId) return;
+    const c = this.clientes.find(x => x.id === raw.clienteId);
+    if (!c) return;
+    raw.clienteNombre    = `${c.nombre} ${c.apellido}`;
+    raw.direccionEntrega = c.direccion;
+  }
+
+  private completeRepartidorFields(raw: any): void {
+    if (!raw.repartidorId) return;
+    const r = this.repartidores.find(x => x.id === raw.repartidorId);
+    if (!r) return;
+    raw.repartidorNombre = `${r.nombre} ${r.apellido}`;
+  }
+
+  /** 4a. Envía la petición de creación */
+  private sendCreate(payload: any): void {
+    this.pedidoService.crearPedido(payload)
+      .subscribe({
+        next: nuevo => {
+          this.pedidos.push(nuevo);
+          this.filtrarPedidos();
+          this.toggleFormMode('oculto');
+        },
+        error: err => {
+          console.error('Error al crear pedido:', err);
+          alert(`Error al crear pedido: ${err.message || err.status}`);
+        }
+      });
+  }
+
+  /** 4b. Envía la petición de actualización */
+  private sendUpdate(payload: any): void {
+    this.pedidoService.actualizarPedido(payload)
+      .subscribe({
+        next: actualizado => {
+          const idx = this.pedidos.findIndex(p => p.id === actualizado.id);
+          if (idx !== -1) {
+            this.pedidos[idx] = actualizado;
+            this.filtrarPedidos();
+          }
+          this.toggleFormMode('oculto');
+        },
+        error: err => {
+          console.error('Error al actualizar pedido:', err);
+          const msg = err.error?.message || err.message;
+          alert(`No se pudo actualizar el pedido: ${msg}`);
+        }
+      });
+  }
+
+
+
+  /** Revisa cada línea de producto y devuelve las que tienen stock insuficiente */
+  private tieneStockInsuficiente(): Array<{
+    index: number;
+    productoId: number;
+    nombre: string;
+    solicitado: number;
+    disponible: number;
+  }> {
+    const faltantes = [];
+
+    // Asegurarnos de que la lista de productos está cargada
+    if (!this.productos || this.productos.length === 0) {
+      alert('Error interno: la lista de productos no está cargada.');
+      return [{ index: -1, productoId: 0, nombre: 'N/A', solicitado: 0, disponible: 0 }];
+    }
+
+    for (let i = 0; i < this.productosFormArray.length; i++) {
+      const grupo     = this.productosFormArray.at(i);
+      const rawId     = grupo.get('productoId')!.value;
+      const solicitado= grupo.get('cantidad')!.value;
+
+      // 1) Parsear bien el ID a número
+      const productoId = typeof rawId === 'string' ? parseInt(rawId, 10) : rawId;
+
+      // 2) Si no hay producto seleccionado, ignoramos esta línea
+      if (!productoId) {
+        // Opcional: podrías alertar, pero a veces es normal tener líneas vacías
+        console.warn(`Línea ${i+1}: aún no se ha seleccionado un producto.`);
+        continue;
+      }
+
+      // 3) Buscarlo en el array de productos
+      const prod = this.productos.find(p => p.id === productoId);
+      if (!prod) {
+        alert(`Error interno: el producto con ID ${productoId} no está cargado.`);
+        return [{ index: i, productoId, nombre: 'Desconocido', solicitado, disponible: 0 }];
+      }
+
+      // 4) Verificar que stock esté definido
+      if (prod.stock == null) {
+        alert(`El producto "${prod.nombre}" no tiene stock definido.`);
+        return [{ index: i, productoId, nombre: prod.nombre, solicitado, disponible: 0 }];
+      }
+
+      const disponible = prod.stock;
+      console.log(
+        `Línea ${i+1}: Validando stock para ${prod.nombre} ` +
+        `(solicitado=${solicitado}, disponible=${disponible})`
+      );
+
+      // 5) Agregar a faltantes si excede
+      if (solicitado > disponible) {
+        faltantes.push({
+          index: i,
+          productoId,
+          nombre: prod.nombre,
+          solicitado,
+          disponible
+        });
+      }
+    }
+
+    return faltantes;
   }
 
   confirmarEliminar(pedido: Pedido): void {

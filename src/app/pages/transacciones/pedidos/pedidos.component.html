@@ -28,8 +28,8 @@
                 <label class="form-label" for="clienteId">Cliente</label>
                 <select id="clienteId" formControlName="clienteId" class="form-control"
                         [class.is-invalid]="submitted && f['clienteId'].errors">
-                  <option value="">Seleccione un cliente</option>
-                  <option *ngFor="let cliente of clientes" [value]="cliente.id">
+                  <option [ngValue]="null">Seleccione un cliente</option>
+                  <option *ngFor="let cliente of clientes" [ngValue]="cliente.id">
                     {{ cliente.nombre }} {{ cliente.apellido }}
                   </option>
                 </select>

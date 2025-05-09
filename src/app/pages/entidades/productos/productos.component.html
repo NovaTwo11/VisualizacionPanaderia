@@ -28,7 +28,8 @@
                        class="form-control"
                        [class.is-invalid]="submitted && f['nombre'].errors">
                 <div class="invalid-feedback" *ngIf="submitted && f['nombre'].errors">
-                  El nombre es requerido
+                  <span *ngIf="f['nombre'].errors?.['required']">El nombre es requerido.</span>
+                  <span *ngIf="f['nombre'].errors?.['pattern']">Solo letras, números y espacios.</span>
                 </div>
               </div>
             </div>
@@ -41,12 +42,13 @@
                   <option value="">Seleccione una categoría</option>
                   <option value="Panes">Panes</option>
                   <option value="Pasteles">Pasteles</option>
-                  <option value="Galletas">Galletas</option>
-                  <option value="Bebidas">Bebidas</option>
-                  <option value="Otros">Otros</option>
+                  <option value="Dulces">Dulces</option>
+                  <option value="Salados">Salados</option>
+                  <option value="Bolleria">Bollería</option>
+                  <option value="Panes Especiales">Panes Especiales</option>
                 </select>
                 <div class="invalid-feedback" *ngIf="submitted && f['categoria'].errors">
-                  La categoría es requerida
+                  <span *ngIf="f['categoria'].errors?.['required']">La categoría es requerida.</span>
                 </div>
               </div>
             </div>
@@ -56,7 +58,12 @@
             <label for="descripcion" class="form-label">Descripción</label>
             <textarea id="descripcion" formControlName="descripcion"
                       class="form-control"
-                      rows="3"></textarea>
+                      rows="3"
+                      [class.is-invalid]="submitted && f['descripcion'].errors"></textarea>
+            <div class="invalid-feedback" *ngIf="submitted && f['descripcion'].errors">
+              <span *ngIf="f['descripcion'].errors?.['required']">La descripción es requerida.</span>
+              <span *ngIf="f['descripcion'].errors?.['minlength']">Mínimo 5 caracteres.</span>
+            </div>
           </div>
 
           <div class="row">
@@ -67,8 +74,8 @@
                        class="form-control"
                        [class.is-invalid]="submitted && f['precio'].errors">
                 <div class="invalid-feedback" *ngIf="submitted && f['precio'].errors">
-                  <span *ngIf="f['precio'].errors?.['required']">El precio es requerido</span>
-                  <span *ngIf="f['precio'].errors?.['min']">El precio debe ser mayor a 0</span>
+                  <span *ngIf="f['precio'].errors?.['required']">El precio es requerido.</span>
+                  <span *ngIf="f['precio'].errors?.['min']">Debe ser mayor a 0.</span>
                 </div>
               </div>
             </div>
@@ -79,8 +86,8 @@
                        class="form-control"
                        [class.is-invalid]="submitted && f['stock'].errors">
                 <div class="invalid-feedback" *ngIf="submitted && f['stock'].errors">
-                  <span *ngIf="f['stock'].errors?.['required']">El stock es requerido</span>
-                  <span *ngIf="f['stock'].errors?.['min']">El stock debe ser mayor o igual a 0</span>
+                  <span *ngIf="f['stock'].errors?.['required']">El stock es requerido.</span>
+                  <span *ngIf="f['stock'].errors?.['min']">No puede ser negativo.</span>
                 </div>
               </div>
             </div>
@@ -124,7 +131,7 @@
           ></app-search-bar>
 
           <select class="filter-select" [(ngModel)]="filtroCategoria" (change)="filtrarProductos()">
-            <option value="todas">Todas las categorías</option>
+            <option value="todos">Todas las categorías</option>
             <option value="Panes">Panes</option>
             <option value="Pasteles">Pasteles</option>
             <option value="Dulces">Dulces</option>
