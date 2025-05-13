@@ -25,7 +25,7 @@ export class AuthService {
   }
 
   iniciarSesion(email: string, contrasena: string): Observable<Administrador> {
-    return this.http.post<Administrador>(`${BASE_URL}/login`, { email, contrasena })
+    return this.http.post<Administrador>(`${BASE_URL}/login`, { email, contrasena }, { withCredentials: true })
       .pipe(
         tap(user => {
           this._user = user;
@@ -38,15 +38,19 @@ export class AuthService {
   }
 
   logout(): Observable<void> {
-    return this.http.post<void>(`${BASE_URL}/logout`, {})
-      .pipe(
-        tap(() => {
-          this._user = null;
-          sessionStorage.removeItem('current_user');
-          this.router.navigate(['/login']);
-        })
-      );
+    return this.http.post<void>(
+      `${BASE_URL}/logout`,
+      {},
+      { withCredentials: true }    // <–– aquí
+    ).pipe(
+      tap(() => {
+        this._user = null;
+        sessionStorage.removeItem('current_user');
+        this.router.navigate(['/login']);
+      })
+    );
   }
+
 
   estaAutenticado(): boolean {
     return !!this._user;

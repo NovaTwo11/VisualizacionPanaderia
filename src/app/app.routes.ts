@@ -20,6 +20,7 @@ import { ReporteVentasComponent } from './pages/reportes-consultas/reporte-venta
 import { ReporteProductosComponent } from './pages/reportes-consultas/reporte-productos/reporte-productos.component';
 import { UtilidadesComponent } from './pages/utilidades/utilidades.component';
 import { AyudaComponent } from './pages/ayuda/ayuda.component';
+import {RegistroActividadComponent} from './pages/reportes-consultas/registro-actividad/registro-actividad.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -55,7 +56,8 @@ export const routes: Routes = [
         children: [
           { path: '', redirectTo: 'ventas', pathMatch: 'full' },
           { path: 'ventas', component: ReporteVentasComponent },
-          { path: 'productos', component: ReporteProductosComponent }
+          { path: 'productos', component: ReporteProductosComponent },
+          { path: 'actividad', component: RegistroActividadComponent}
         ]
       },
       { path: 'utilidades', component: UtilidadesComponent },

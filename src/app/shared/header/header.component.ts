@@ -89,8 +89,7 @@ export class HeaderComponent implements OnInit {
 
   cerrarSesion(): void {
     this.authService.logout().subscribe(() => {
-      this.router.navigate(["/login"])
-    })
+    });
   }
 
   cambiarTema(tema: string): void {

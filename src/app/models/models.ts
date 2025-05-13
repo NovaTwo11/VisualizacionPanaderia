@@ -140,5 +140,13 @@ export interface BackupHistory {
   sizeBytes: number;
 }
 
+export interface Bitacora {
+  id: number;
+  timestamp: string;    // ISO string
+  usuarioId: number;
+  evento: string;
+  detalle?: string;
+}
+
 
 

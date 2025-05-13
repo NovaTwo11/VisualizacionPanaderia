@@ -1,0 +1,234 @@
+<div class="registro-actividad-container">
+  <div class="page-header">
+    <div class="page-title">
+      <h2>Registro de Actividad de Administradores</h2>
+      <p>Visualice los registros de entrada y salida de los administradores del sistema</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-primary" (click)="exportarPDF()">
+        <span>📄</span> Exportar a PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card animate-fade-in">
+    <div class="card-header">
+      <h3>Filtros</h3>
+    </div>
+    <div class="card-body">
+      <div class="filters-container">
+        <!-- Fecha y hora inicio/fin -->
+        <div class="row">
+          <div class="col">
+            <label for="fechaInicio" class="form-label">Fecha Inicio</label>
+            <input type="date" id="fechaInicio" [(ngModel)]="filtros.fechaInicio"
+                   class="form-control" (change)="aplicarFiltros()">
+          </div>
+          <div class="col">
+            <label for="fechaFin" class="form-label">Fecha Fin</label>
+            <input type="date" id="fechaFin" [(ngModel)]="filtros.fechaFin"
+                   class="form-control" (change)="aplicarFiltros()">
+          </div>
+          <div class="col">
+            <label for="horaInicio" class="form-label">Hora Inicio</label>
+            <input type="time" id="horaInicio" [(ngModel)]="filtros.horaInicio"
+                   class="form-control" (change)="aplicarFiltros()">
+          </div>
+          <div class="col">
+            <label for="horaFin" class="form-label">Hora Fin</label>
+            <input type="time" id="horaFin" [(ngModel)]="filtros.horaFin"
+                   class="form-control" (change)="aplicarFiltros()">
+          </div>
+        </div>
+
+        <!-- Administrador, estado y duración -->
+        <div class="row mt-3">
+          <div class="col">
+            <label for="administrador" class="form-label">Administrador</label>
+            <select id="administrador" [(ngModel)]="filtros.administradorId"
+                    class="form-control" (change)="aplicarFiltros()">
+              <option value="">Todos los administradores</option>
+              <option *ngFor="let admin of administradores" [value]="admin.id">
+                {{ admin.nombre }} {{ admin.apellido }}
+              </option>
+            </select>
+          </div>
+          <div class="col">
+            <label for="estado" class="form-label">Estado</label>
+            <select id="estado" [(ngModel)]="filtros.estado"
+                    class="form-control" (change)="aplicarFiltros()">
+              <option value="">Todos</option>
+              <option value="activo">Activo (Sin salida)</option>
+              <option value="finalizado">Finalizado</option>
+            </select>
+          </div>
+          <div class="col">
+            <label for="duracionMinima" class="form-label">Duración Mínima (min)</label>
+            <input type="number" id="duracionMinima" [(ngModel)]="filtros.duracionMinima"
+                   class="form-control" min="0" (change)="aplicarFiltros()">
+          </div>
+          <div class="col">
+            <label for="duracionMaxima" class="form-label">Duración Máxima (min)</label>
+            <input type="number" id="duracionMaxima" [(ngModel)]="filtros.duracionMaxima"
+                   class="form-control" min="0" (change)="aplicarFiltros()">
+          </div>
+          <div class="col d-flex align-items-end">
+            <button class="btn btn-outline" (click)="limpiarFiltros()">
+              <span>🔄</span> Limpiar Filtros
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Registros de Actividad -->
+  <div class="card animate-slide-up">
+    <div class="card-header">
+      <h3>Registros de Actividad</h3>
+      <div class="card-filters">
+        <app-search-bar
+          placeholder="Buscar registro..."
+          [(searchValue)]="searchTerm"
+          (search)="onSearchChange()"
+        ></app-search-bar>
+      </div>
+    </div>
+    <div class="card-body">
+      <!-- Loader -->
+      <div *ngIf="loading" class="loading-container">
+        <div class="loader"></div>
+        <p>Cargando registros de actividad...</p>
+      </div>
+
+      <!-- Error + Reintentar -->
+      <div *ngIf="!loading && error" class="error-container">
+        <p>{{ error }}</p>
+        <button class="btn btn-primary" (click)="cargarRegistros()">
+          Reintentar
+        </button>
+      </div>
+
+      <!-- Sin datos -->
+      <div *ngIf="!loading && !error && registrosFiltrados.length === 0"
+           class="text-center p-4">
+        <p>No se encontraron registros de actividad.</p>
+      </div>
+
+      <!-- Gráficos, tabla y resúmenes: solo si hay datos -->
+      <ng-container *ngIf="!loading && !error && registrosFiltrados.length > 0">
+        <!-- Gráficos -->
+        <div class="charts-container mb-4">
+          <canvas #actividadCanvas></canvas>
+        </div>
+
+        <!-- Tabla con datos -->
+        <div class="table-container mb-4">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>Administrador</th>
+              <th>Rol</th>
+              <th>Fecha Entrada</th>
+              <th>Hora Entrada</th>
+              <th>Fecha Salida</th>
+              <th>Hora Salida</th>
+              <th>Duración</th>
+              <th>Estado</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let registro of registrosFiltrados; let i = index"
+                [style.animation-delay]="i * 0.05 + 's'"
+                class="animate-fade-in">
+              <td>
+                <div class="user-info">
+                  <div class="user-avatar" [ngClass]="registro.rol.toLowerCase()">
+                    {{ registro.nombreAdmin.charAt(0) }}{{ registro.apellidoAdmin.charAt(0) }}
+                  </div>
+                  <span class="user-name">
+                      {{ registro.nombreAdmin }} {{ registro.apellidoAdmin }}
+                    </span>
+                </div>
+              </td>
+              <td>
+                  <span class="badge" [ngClass]="'badge-' + registro.rol.toLowerCase()">
+                    {{ registro.rol }}
+                  </span>
+              </td>
+              <td>{{ registro.fechaEntrada | date: 'dd/MM/yyyy' }}</td>
+              <td>{{ registro.fechaEntrada | date: 'HH:mm:ss' }}</td>
+              <td>
+                {{ registro.fechaSalida ? (registro.fechaSalida | date: 'dd/MM/yyyy') : '-' }}
+              </td>
+              <td>
+                {{ registro.fechaSalida ? (registro.fechaSalida | date: 'HH:mm:ss') : '-' }}
+              </td>
+              <td>{{ calcularDuracion(registro) }}</td>
+              <td>
+                  <span class="badge"
+                        [ngClass]="registro.fechaSalida ? 'badge-success' : 'badge-warning'">
+                    {{ registro.fechaSalida ? 'Finalizado' : 'Activo' }}
+                  </span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Resumen de Actividad -->
+        <div class="card animate-slide-up mb-4">
+          <div class="card-header">
+            <h3>Resumen de Actividad</h3>
+          </div>
+          <div class="card-body">
+            <div class="dashboard-summary">
+              <div class="summary-card">
+                <div class="summary-icon">👤</div>
+                <div class="summary-content">
+                  <h3>{{ obtenerTotalAdministradores() }}</h3>
+                  <p>Administradores Activos</p>
+                </div>
+              </div>
+              <div class="summary-card">
+                <div class="summary-icon">🔄</div>
+                <div class="summary-content">
+                  <h3>{{ obtenerTotalSesiones() }}</h3>
+                  <p>Total de Sesiones</p>
+                </div>
+              </div>
+              <div class="summary-card">
+                <div class="summary-icon">⏱️</div>
+                <div class="summary-content">
+                  <h3>{{ obtenerPromedioTiempo() }}</h3>
+                  <p>Tiempo Promedio</p>
+                </div>
+              </div>
+              <div class="summary-card">
+                <div class="summary-icon">📅</div>
+                <div class="summary-content">
+                  <h3>{{ obtenerDiaMasActivo() }}</h3>
+                  <p>Día Más Activo</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Duración Promedio por Administrador -->
+        <div class="card animate-slide-up">
+          <div class="card-header">
+            <h3>Duración Promedio por Administrador</h3>
+            <p>Visualización del tiempo promedio de sesión para cada administrador</p>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas #duracionPromedioCanvas></canvas>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
